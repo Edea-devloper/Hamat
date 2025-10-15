@@ -1,0 +1,213 @@
+$main-font: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+/* Birthday Widget */
+.widget-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  font-family: $main-font;
+}
+.widget-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  direction: rtl;
+}
+
+.view-all-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+/* Custom icon styling for SVG files */
+.widget-icon img {
+  width: 48px;
+  height: 48px;
+  filter: none; /* Keep original black color */
+}
+
+/* Special styling for PNG files (balloon icon) */
+.widget-icon img[src$=".png"] {
+  width: 52px;
+  height: 52px;
+  filter: none; /* Keep original colors for PNG */
+}
+.widget-header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.widget {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  height: 700px;
+  overflow: hidden;
+  width: 320px;
+}
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  margin: 0;
+}
+.birthday-widget .widget-header {
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff4081 100%);
+  color: white;
+}
+.birthday-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-right: 3px solid #ff4081;
+  transition: all 0.2s ease;
+  direction: ltr;
+}
+
+.birthday-item:hover {
+  background: #fafafa;
+  transform: translateX(-2px);
+}
+
+.birthday-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ff4081, #e91e63);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  position: relative;
+}
+
+.birthday-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.birthday-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 2px;
+  font-family: $main-font;
+}
+
+.birthday-role {
+  font-size: 11px;
+  color: #000000;
+  margin-bottom: 2px;
+  font-family: $main-font;
+}
+
+.birthday-date {
+  font-size: 11px;
+  color: #000000;
+  font-weight: 500;
+  font-family: $main-font;
+}
+.birthday-email {
+  max-width: 196px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  color: #000000;
+  margin-bottom: 2px;
+  font-family: $main-font;
+}
+
+.decade-celebration {
+  font-size: 12px;
+  color: #ff4081;
+  font-weight: 700;
+  margin-top: 4px;
+  padding: 2px 6px;
+  background: #fdf5ff;
+  border-radius: 4px;
+  display: inline-block;
+  font-family: $main-font;
+  text-align: right;
+}
+
+.birthday-action {
+  background: #ff4081;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.birthday-action:hover {
+  background: #e91e63;
+  transform: scale(1.05);
+}
+.birthday-action-checked {
+  background: #00a56e !important;
+}
+
+
+@media (max-width: 1200px) {
+    .widget {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .widget {
+        height: 600px;
+        width: 100%;
+    }
+
+    .widget-content {
+        padding: 16px;
+    }
+
+    .new-employee-item {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .new-employee-info {
+        line-height: 1.4;
+    }
+
+    .new-employee-name,
+    .new-employee-dept,
+    .new-employee-role {
+        max-width: 140px;
+        font-size: 13px;
+    }
+
+    .new-employee-action {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 64 64">
+  <!-- Gift lid -->
+  <rect x="8" y="16" width="48" height="12" fill="black" />
+  
+  <!-- Gift box -->
+  <rect x="8" y="28" width="48" height="28" fill="black" />
+  
+  <!-- Vertical ribbon -->
+  <rect x="30" y="16" width="4" height="40" fill="white" />
+  
+  <!-- Horizontal ribbon on lid -->
+  <rect x="8" y="22" width="48" height="4" fill="white" />
+  
+  <!-- Left bow loop (white) -->
+  <path d="M24 16c-4 0-8-4-8-8s4-4 8 0c2 2 2 4 2 4s0 4-2 4z" fill="white" />
+  
+  <!-- Right bow loop (white) -->
+  <path d="M40 16c4 0 8-4 8-8s-4-4-8 0c-2 2-2 4-2 4s0 4 2 4z" fill="white" />
+</svg>

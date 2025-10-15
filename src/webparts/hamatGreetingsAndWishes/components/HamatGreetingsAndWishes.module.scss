@@ -1,0 +1,241 @@
+.GreetingsWidget,
+.widgetHeader {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+}
+
+.dashboardcontainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.widgetsgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.widget {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  height: 700px;
+  overflow: hidden;
+  width: 320px;
+  direction: rtl;
+
+  .greetingItem {
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border-right: 3px solid #ff6b6b;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #fafafa;
+      transform: translateX(-2px);
+    }
+  }
+
+  .greetingInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .greetingName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 4px;
+    text-align: right;
+  }
+
+  .greetingDesc {
+    font-size: 12px;
+    color: #000000;
+    text-align: right;
+  }
+  
+
+  .greetingAction {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+
+    &:hover {
+      background: #ee5a52;
+      transform: scale(1.05);
+
+      .tooltip {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    .tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+/* Individual Widget Header Styling */
+.birthdayWidgetHeader {
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff4081 100%);
+  color: white;
+}
+
+.greetingsWidgetHeader {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+}
+
+.newEmployeesWidgetHeader {
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b35 100%);
+  color: white;
+}
+
+.directoryWidgetHeader {
+  background: linear-gradient(135deg, #00d084 0%, #00a56e 100%);
+  color: white;
+}
+
+.widgetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  margin: 0;
+}
+
+.widgetHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.widgetIcon {
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: black;
+}
+
+/* Custom icon styling for SVG files */
+.widgetIcon img {
+  width: 48px;
+  height: 48px;
+  filter: none;
+  /* Keep original black color */
+}
+
+/* Special styling for PNG files (balloon icon) */
+.widgetIconPng {
+  width: 52px;
+  height: 52px;
+  filter: none;
+  /* Keep original colors for PNG */
+}
+
+.widgetTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  line-height: 1.6;
+}
+
+.viewAllBtn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewAllBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.widgetContent {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+@media (max-width: 1200px) {
+  .widgets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardcontainer {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .widgets-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .widget {
+    height: 600px;
+  }
+
+  .ticker-scroll {
+    height: 40px;
+  }
+
+  .ticker-content {
+    animation-duration: 25s;
+  }
+
+  .currency-item {
+    min-width: 140px;
+    padding: 4px 8px;
+  }
+}

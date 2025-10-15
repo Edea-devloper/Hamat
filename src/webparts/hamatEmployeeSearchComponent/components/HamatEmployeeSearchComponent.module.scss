@@ -1,0 +1,253 @@
+.widget {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  height: 700px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.directory-widget .widget-header {
+  background: linear-gradient(135deg, #00d084 0%, #00a56e 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.widget-header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.widget-icon img {
+  width: 48px;
+  height: 48px;
+}
+
+.widget-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.widget-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  direction: rtl;
+}
+
+.search-box {
+  width: 90%;
+  padding: 12px;
+  border: 2px solid #e1e4e9;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  direction: rtl;
+  cursor: pointer;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: #00d084;
+  box-shadow: 0 0 0 3px rgba(0, 208, 132, 0.1);
+}
+
+.directory-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-right: 3px solid #00d084;
+  transition: all 0.2s ease;
+  direction: rtl;
+}
+
+.directory-item:hover {
+  background: #fafafa;
+  transform: translateX(-2px);
+}
+
+.directory-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.5;
+
+  div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 196px;
+    direction: ltr;
+  }
+}
+
+.directory-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1px;
+}
+
+.directory-company {
+  font-size: 10px;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.directory-dept {
+  font-size: 10px;
+  color: #000000;
+  margin-bottom: 1px;
+}
+
+.directory-role {
+  font-size: 10px;
+  color: #000000;
+  margin-bottom: 1px;
+}
+
+.directory-phone {
+  font-size: 10px;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.phoneLink {
+  font-size: 10px;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 1px;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.directory-field {
+
+  position: relative;
+}
+
+.directory-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 1px;
+}
+
+.directory-company,
+.directory-dept,
+.directory-role,
+.directory-phone {
+  font-size: 10px;
+  color: #000;
+  margin-bottom: 1px;
+}
+
+.directory-company,
+.directory-phone {
+  font-weight: 500;
+}
+
+.contact-btn {
+  background: #00d084;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.contact-btn:hover {
+  background: #00a56e;
+  transform: scale(1.05);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  /* Adjust above the element */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (max-width: 1200px) {
+    .widget {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .widget {
+        height: 600px;
+        width: 100%;
+    }
+
+    .widget-content {
+        padding: 16px;
+    }
+
+    .new-employee-item {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .new-employee-info {
+        line-height: 1.4;
+    }
+
+    .new-employee-name,
+    .new-employee-dept,
+    .new-employee-role {
+        max-width: 140px;
+        font-size: 13px;
+    }
+
+    .new-employee-action {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}

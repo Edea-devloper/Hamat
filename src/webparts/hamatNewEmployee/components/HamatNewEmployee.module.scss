@@ -1,0 +1,188 @@
+/* Widget Wrapper */
+.widget {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    height: 700px;
+    overflow: hidden;
+    direction: rtl;
+    width: 320px;
+}
+
+/* Header for New Employees Widget */
+.new-employees-widget .widget-header {
+    background: linear-gradient(135deg, #ff9500 0%, #ff6b35 100%);
+    color: white;
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px;
+    margin: 0;
+}
+
+.widget-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.widget-icon {
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: black;
+}
+
+.widget-icon img {
+    width: 48px;
+    height: 48px;
+    filter: none;
+}
+
+.widget-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    line-height: 1.6;
+}
+
+.widget-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* New Employee Items */
+.new-employee-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border-right: 3px solid #ff9500;
+    transition: all 0.2s ease;
+}
+
+.new-employee-item:hover {
+    background: #fafafa;
+    transform: translateX(-2px);
+}
+
+.new-employee-info {
+    align-items: flex-end;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.6;
+    direction: ltr;
+}
+
+.new-employee-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 2px;
+}
+
+.new-employee-dept {
+    font-size: 11px;
+    color: #000000;
+    margin-bottom: 2px;
+}
+
+.new-employee-role {
+    font-size: 11px;
+    color: #000000;
+    font-weight: 500;
+}
+
+.new-employee-name,
+.new-employee-dept,
+.new-employee-role {
+  max-width: 190px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block; /* or block depending on layout */
+}
+
+
+/* Action Button */
+.new-employee-action {
+    background: #ff9500;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.new-employee-action:hover {
+    background: #ff6b35;
+    transform: scale(1.05);
+}
+
+.new-employee-field {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333; // adjust styling
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+    .widget {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .widget {
+        height: 600px;
+        width: 100%;
+    }
+
+    .widget-content {
+        padding: 16px;
+    }
+
+    .new-employee-item {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .new-employee-info {
+        line-height: 1.4;
+    }
+
+    .new-employee-name,
+    .new-employee-dept,
+    .new-employee-role {
+        max-width: 140px;
+        font-size: 13px;
+    }
+
+    .new-employee-action {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+}

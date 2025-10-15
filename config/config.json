@@ -1,0 +1,73 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "hamat-employee-birthday-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatEmployeeBirthday/HamatEmployeeBirthdayWebPart.js",
+          "manifest": "./src/webparts/hamatEmployeeBirthday/HamatEmployeeBirthdayWebPart.manifest.json"
+        }
+      ]
+    },
+    "hamat-greetings-and-wishes-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatGreetingsAndWishes/HamatGreetingsAndWishesWebPart.js",
+          "manifest": "./src/webparts/hamatGreetingsAndWishes/HamatGreetingsAndWishesWebPart.manifest.json"
+        }
+      ]
+    },
+    "hamat-new-employee-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatNewEmployee/HamatNewEmployeeWebPart.js",
+          "manifest": "./src/webparts/hamatNewEmployee/HamatNewEmployeeWebPart.manifest.json"
+        }
+      ]
+    },
+    "currency-display-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/currencyDisplay/CurrencyDisplayWebPart.js",
+          "manifest": "./src/webparts/currencyDisplay/CurrencyDisplayWebPart.manifest.json"
+        }
+      ]
+    },
+    "hamat-employee-search-component-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatEmployeeSearchComponent/HamatEmployeeSearchComponentWebPart.js",
+          "manifest": "./src/webparts/hamatEmployeeSearchComponent/HamatEmployeeSearchComponentWebPart.manifest.json"
+        }
+      ]
+    },
+    "hamat-events-calendar-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatEventsCalendar/HamatEventsCalendarWebPart.js",
+          "manifest": "./src/webparts/hamatEventsCalendar/HamatEventsCalendarWebPart.manifest.json"
+        }
+      ]
+    },
+    "hamat-career-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatCareer/HamatCareerWebPart.js",
+          "manifest": "./src/webparts/hamatCareer/HamatCareerWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "HamatEmployeeBirthdayWebPartStrings": "lib/webparts/hamatEmployeeBirthday/loc/{locale}.js",
+    "HamatNewEmployeeWebPartStrings": "lib/webparts/hamatNewEmployee/loc/{locale}.js",
+    "HamatGreetingsAndWishesWebPartStrings": "lib/webparts/hamatGreetingsAndWishes/loc/{locale}.js",
+    "CurrencyDisplayWebPartStrings": "lib/webparts/currencyDisplay/loc/{locale}.js",
+    "HamatEmployeeSearchComponentWebPartStrings": "lib/webparts/hamatEmployeeSearchComponent/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
+    "HamatEventsCalendarWebPartStrings": "lib/webparts/hamatEventsCalendar/loc/{locale}.js",
+    "HamatCareerWebPartStrings": "lib/webparts/hamatCareer/loc/{locale}.js"
+  }
+}

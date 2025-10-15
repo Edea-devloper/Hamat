@@ -1,0 +1,137 @@
+@import "~@fluentui/react/dist/sass/References.scss";
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Currency Section - Compact */
+.currency-section {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.ticker-scroll {
+  padding: 0;
+  background: white;
+  overflow: hidden;
+  position: relative;
+  height: 45px;
+}
+
+.ticker-content {
+  display: flex;
+  animation: scroll-right 35s linear infinite;
+  gap: 20px;
+  padding: 0 20px;
+  align-items: center;
+  height: 100%;
+}
+
+.ticker-scroll:hover .ticker-content {
+  animation-play-state: paused;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+@keyframes scroll-right {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.currency-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #f8f9fb;
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  min-width: 160px;
+  border: 1px solid #e1e4e9;
+  direction: ltr;
+}
+
+.currency-flag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #667eea;
+  background: #f0f3ff;
+  padding: 4px 6px;
+  border-radius: 4px;
+  min-width: 42px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.currencyflagimg {
+  width: 32px;
+  height: 20px;
+  object-fit: cover;
+  margin-right: 4px;
+}
+
+.currency-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.currency-rate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.rate-value {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rate-value.positive {
+  color: #4caf50;
+}
+
+.rate-value.negative {
+  color: #f44336;
+}
+
+.rate-change {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.rate-change.positive {
+  color: #4caf50;
+}
+
+.rate-change.positive i {
+  color: #4caf50;
+}
+
+.rate-change.negative {
+  color: #f44336;
+}
+
+.rate-change.negative i {
+  color: #f44336;
+}

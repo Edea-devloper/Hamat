@@ -1,0 +1,207 @@
+  .job-details-page {
+      display: block;
+      width: 100% !important;
+      justify-self: center;
+      direction: rtl;
+  }
+
+  .back-button {
+      background: transparent;
+      color: #4a4a4a;
+      border: 1px solid #4a4a4a;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 26px;
+      transition: all 0.2s ease;
+      width: fit-content;
+      font-weight: 500;
+  }
+
+  .back-button:hover {
+      border-color: #333333;
+      color: #333333;
+      transform: translateY(-1px);
+  }
+
+  .job-full-details {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 42px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+  }
+
+  .job-full-header {
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 26px;
+      margin-bottom: 36px;
+      position: relative;
+  }
+
+  .job-full-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      right: 0;
+      width: 120px;
+      height: 2px;
+      background: #2563eb;
+      border-radius: 2px;
+  }
+
+  .job-full-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 18px;
+      display: flex;
+  }
+
+  .job-full-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 26px;
+  }
+
+  .job-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+  }
+
+  .job-meta-item .JobdetailsIcon {
+      width: 18px;
+      color: #64748b;
+      font-size: 16px;
+  }
+
+  .job-content {
+      margin-bottom: 36px;
+  }
+
+  .job-section {
+      margin-bottom: 32px;
+  }
+
+  .job-section h3 {
+      color: #1e293b;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f1f5f9;
+      position: relative;
+      display: flex;
+  }
+
+  .job-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      right: 0;
+      width: 60px;
+      height: 2px;
+      background: #2563eb;
+      border-radius: 2px;
+  }
+
+  .job-section p {
+      color: #64748b;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      font-size: 15px;
+      direction: ltr;
+  }
+
+  .job-section ul {
+      color: #64748b;
+      padding-right: 24px;
+
+      text-align: right;
+  }
+
+  .job-section li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+      font-size: 15px;
+  }
+
+  .job-full-actions {
+      display: flex;
+      gap: 16px;
+      padding: 26px 0;
+      border-top: 2px solid #f1f5f9;
+      position: relative;
+      justify-content: flex-start;
+  }
+
+  .job-full-actions::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: 0;
+      width: 100px;
+      height: 2px;
+      background: #2563eb;
+      border-radius: 2px;
+  }
+
+  .btn-apply {
+      background: #4a4a4a;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
+
+  .btn-apply:hover {
+      background: #333333;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .email-contact {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+  }
+
+  .email-contact h4 {
+      color: #1e293b;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+  }
+
+  .email-contact a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+  }
+
+  .email-contact a:hover {
+      text-decoration: underline;
+  }
