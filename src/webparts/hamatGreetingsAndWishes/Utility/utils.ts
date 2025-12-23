@@ -128,7 +128,7 @@ export const getHamatEmployeeListItemsByEmail = async (hamatEmployeeList: string
       const allItems = await _sp.web.lists
         .getById(hamatEmployeeList)
         .items
-        .select("Company", "UserMail", "HebrewName")
+        .select("Company", "UserMail", "HebrewName", "JobTitle", "Department", "CompanyName","UserName")
         .orderBy("Created", false).top(5000)();
 
       // Append a property and return
@@ -147,7 +147,7 @@ export const getHamatEmployeeListItemsByEmail = async (hamatEmployeeList: string
       const allItems = await _sp.web.lists
         .getById(hamatEmployeeList)
         .items
-        .select("Company", "UserMail", "HebrewName")
+        .select("Company", "UserMail", "HebrewName", "JobTitle", "Department", "CompanyName","UserName")
         .orderBy("Created", false).top(5000)();
 
       return allItems.map(item => ({
@@ -174,7 +174,7 @@ export const getHamatEmployeeListItemsByEmail = async (hamatEmployeeList: string
     const items = await _sp.web.lists
       .getById(hamatEmployeeList)
       .items
-      .select("Company", "UserMail", "HebrewName")
+      .select("Company", "UserMail", "HebrewName", "JobTitle", "Department", "CompanyName","UserName")
       .filter(finelFilterQueryForEmpList)
       .orderBy("Created", false).top(5000)();
 

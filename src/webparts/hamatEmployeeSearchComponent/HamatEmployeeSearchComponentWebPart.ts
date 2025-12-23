@@ -17,6 +17,8 @@ import { IHamatEmployeeSearchComponentProps } from "./components/IHamatEmployeeS
 import {
   IColumnReturnProperty,
   IPropertyFieldRenderOption,
+  PropertyFieldColorPicker,
+  PropertyFieldColorPickerStyle,
   PropertyFieldColumnPicker,
   PropertyFieldColumnPickerOrderBy,
 } from "@pnp/spfx-property-controls";
@@ -32,6 +34,11 @@ export interface IHamatEmployeeSearchComponentWebPartProps {
   selectedColumnsCard: string[];
   EmployeeSearchComponentTitle: string;
   EmployeeSearchComponentWebpartHeight: number;
+  placeholderText: string;
+  emailBody: string;
+  emailSubject: string;
+  backgroundColor?: string;
+  themeColorForFont?: string;
 }
 
 let cols: any[] = [];
@@ -44,9 +51,17 @@ export default class HamatEmployeeSearchComponentWebPart extends BaseClientSideW
         EmployeeList: this.properties.EmployeeList,
         context: this.context,
         Columns: cols as any,
-        EmployeeSearchComponentTitle: this.properties.EmployeeSearchComponentTitle,
-        EmployeeSearchComponentWebpartHeight: this.properties.EmployeeSearchComponentWebpartHeight
-
+        EmployeeSearchComponentTitle:
+          this.properties.EmployeeSearchComponentTitle,
+        EmployeeSearchComponentWebpartHeight:
+          this.properties.EmployeeSearchComponentWebpartHeight,
+        emailBody: this.properties.emailBody,
+        emailSubject: this.properties.emailSubject,
+        placeholderText: this.properties.placeholderText,
+        backgroundColor: this.properties.backgroundColor,
+       themeColorForFont: this.properties.themeColorForFont,
+        userEmail: this.context.pageContext.user.email,
+        userDisplayName: this.context.pageContext.user.displayName,
       });
 
     ReactDom.render(element, this.domElement);
@@ -137,9 +152,11 @@ export default class HamatEmployeeSearchComponentWebPart extends BaseClientSideW
                     IPropertyFieldRenderOption["Multiselect Dropdown"],
                   filter: "TypeAsString ne 'Test' or TypeAsString eq 'Boolean'",
                 }),
-                 PropertyPaneTextField("EmployeeSearchComponentWebpartHeight", {
+                PropertyPaneTextField("EmployeeSearchComponentWebpartHeight", {
                   label: "Set height",
-                 value: this.properties.EmployeeSearchComponentWebpartHeight?.toString() || "",
+                  value:
+                    this.properties.EmployeeSearchComponentWebpartHeight?.toString() ||
+                    "",
                 }),
                 PropertyFieldColumnPicker("selectedPhoneColumns", {
                   label: "Select phone columns",
@@ -158,6 +175,39 @@ export default class HamatEmployeeSearchComponentWebPart extends BaseClientSideW
                   renderFieldAs:
                     IPropertyFieldRenderOption["Multiselect Dropdown"],
                   filter: "TypeAsString ne 'Test' or TypeAsString eq 'Boolean'",
+                }),
+                PropertyPaneTextField("placeholderText", {
+                  label: "Add placeholder text",
+                  value: this.properties.placeholderText || "",
+                }),
+                PropertyPaneTextField("emailSubject", {
+                  label: "Employee Search Component Email Subject",
+                  value: this.properties.emailSubject || "",
+                }),
+                PropertyPaneTextField("emailBody", {
+                  label: "Employee Search Component Email Body",
+                  value: this.properties.emailBody || "",
+                  multiline: true,
+                }),
+                PropertyFieldColorPicker("backgroundColor", {
+                  label: "Select Background Color",
+                  selectedColor: this.properties.backgroundColor,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: "colorFieldId",
+                }),
+                PropertyFieldColorPicker("themeColorForFont", {
+                  label: "Select Font Color",
+                  selectedColor: this.properties.themeColorForFont,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: "colorFieldId",
                 }),
               ],
             },

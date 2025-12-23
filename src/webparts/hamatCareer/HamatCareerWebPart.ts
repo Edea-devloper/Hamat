@@ -25,6 +25,14 @@ export interface IHamatCareerWebPartProps {
   context: WebPartContext;
   isPropertyPaneOpen: boolean;
   displayMode: DisplayMode;
+  ShareBtnText: string;
+  ApplyBtnText: string;
+  DetailsBtnText: string;
+  applyJobEmailSubject: string;
+  applyJobEmailBody: string;
+  shareJobEmailSubject:string;
+  shareJobEmailBody:string;
+  flowAPIUrl: string;
 }
 
 export default class HamatCareerWebPart extends BaseClientSideWebPart<IHamatCareerWebPartProps> {
@@ -52,6 +60,14 @@ export default class HamatCareerWebPart extends BaseClientSideWebPart<IHamatCare
         context: this.context,
         isPropertyPaneOpen: this._isPropertyPaneOpen,
         displayMode: this.displayMode,
+        ShareBtnText: this.properties.ShareBtnText,
+        ApplyBtnText: this.properties.ApplyBtnText,
+        DetailsBtnText: this.properties.DetailsBtnText,
+        applyJobEmailSubject: this.properties.applyJobEmailSubject,
+        applyJobEmailBody: this.properties.applyJobEmailBody,
+        shareJobEmailSubject: this.properties.shareJobEmailSubject,
+        shareJobEmailBody: this.properties.shareJobEmailBody,
+        flowAPIUrl: this.properties.flowAPIUrl || '',
       }
     );
 
@@ -83,6 +99,11 @@ export default class HamatCareerWebPart extends BaseClientSideWebPart<IHamatCare
   }
 
   protected onDispose(): void {
+     const style = document.querySelector('style[data-dynamic-css="true"]');
+  if (style) style.remove();
+
+  // window.removeEventListener('popstate', this.injectCss);
+
     ReactDom.unmountComponentAtNode(this.domElement);
   }
 
@@ -156,6 +177,39 @@ export default class HamatCareerWebPart extends BaseClientSideWebPart<IHamatCare
                   context: this.context as any,
                   deferredValidationTime: 0,
                   key: 'listPickerFieldId'
+                }),
+                PropertyPaneTextField("applyJobEmailSubject", {
+                  label: "Apply Job Email – Subject",
+                  value: this.properties.applyJobEmailSubject || "",
+                }),
+                PropertyPaneTextField("applyJobEmailBody", {
+                  label: "Apply Job Email – Body",
+                  value: this.properties.applyJobEmailBody || "",
+                  multiline: true,
+                }),
+                PropertyPaneTextField("shareJobEmailSubject", {
+                  label: "Share Job Email – Subject",
+                  value: this.properties.shareJobEmailSubject || ""
+                }),
+
+                PropertyPaneTextField("shareJobEmailBody", {
+                  label: "Share Job Email – Body",
+                  value: this.properties.shareJobEmailBody || "",
+                  multiline: true
+                }),
+                PropertyPaneTextField('ShareBtnText', {
+                  label: 'Share Button Text'
+                }),
+                PropertyPaneTextField('ApplyBtnText', {
+                  label: 'Apply Button Text'
+                }),
+                PropertyPaneTextField('DetailsBtnText', {
+                  label: 'Details Button Text'
+                }),
+                PropertyPaneTextField("flowAPIUrl", {
+                  label: "Add Flow Base URL",
+                  value: this.properties.flowAPIUrl || "",
+                  multiline: true
                 }),
               ]
             }

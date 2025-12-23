@@ -8,8 +8,6 @@ import {
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
-
-import * as strings from 'HamatEventsCalendarWebPartStrings';
 import HamatEventsCalendar from './components/HamatEventsCalendar';
 import { IHamatEventsCalendarProps } from './components/IHamatEventsCalendarProps';
 import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from '@pnp/spfx-property-controls/lib/PropertyFieldListPicker';

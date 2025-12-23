@@ -108,7 +108,8 @@ export const addToPersonalCalendar = async (event: IEventData) => {
     return [];
   }
 
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timeZone = 'Asia/Jerusalem';
+  // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const newEvent = {
     subject: event.title,

@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faCalendarAlt, faChevronLeft, faChevronRight, faClock } from '@fortawesome/free-solid-svg-icons';
 import { IEventItem } from '../Utility/ISPInterface';
 import { addToPersonalCalendar } from '../Utility/utils';
-import EventItem from './EventItem';
 import EventModal from './EventModal';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
+import { getEventTimeText } from '../Utility/helpers';
 const localizer = momentLocalizer(moment);
 
 // Type definitions
@@ -67,8 +67,21 @@ const Events: React.FC<IEvents> = ({ eventListData, addedCalendarEvent, setShowL
     const [activeModal, setActiveModal] = useState<boolean>(false);
     const [currentEvent, setCurrentEvent] = useState<IEventData | null>(null);
     const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+    const [isMobile, setIsMobile] = useState<boolean>(false);
     // Updated Event Data comes form spo list 
     const [processedEvents, setProcessedEvents] = useState<any[]>([]);
+
+    // Check if mobile view
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 480);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         setShowLoader(true);
@@ -223,12 +236,8 @@ const Events: React.FC<IEvents> = ({ eventListData, addedCalendarEvent, setShowL
         handleEventClickToOpenModal(event.id.toString(), e as unknown as React.MouseEvent);
     };
 
-    //  Custom Event Cell
+    //  Custom Event Cell for Desktop/Tablet
     const CustomEvent: React.FC<{ event: IEventData }> = ({ event }) => {
-
-        const timeText = event.allDayEvent
-            ? 'כל היום'
-            : `${moment(event.start).format('HH:mm')} - ${moment(event.end).format('HH:mm')}`;
         const eventDate = moment(event.start).format("DD/MM");
 
         return (
@@ -244,32 +253,120 @@ const Events: React.FC<IEvents> = ({ eventListData, addedCalendarEvent, setShowL
                 data-event={event.id}
                 onClick={(e) => handleEventClickToOpenModal(event.id.toString(), e as unknown as React.MouseEvent)}
             >
-                <span >{timeText} </span>
+                <span>{getEventTimeText(event)} </span>
                 <span>{eventDate}</span>
-                <span className={styles.eventTime}> {event.title} </span>
+                <span className={styles.eventTime}> {event.subject} </span>
                 {event.location && <span className={styles.eventLocation}>{event.location}</span>}
             </div>
         );
     };
 
-    const CustomDateCellWrapper = ({ children }: any) => {
-        return React.cloneElement(React.Children.only(children), {
-            onDoubleClick: (e: React.MouseEvent) => {
-                e.stopPropagation();
-            },
-            onClick: (e: React.MouseEvent) => {
-                e.stopPropagation();
-                e.preventDefault();
-            },
-            style: {
-                ...children.props.style,
-                cursor: 'default', // Change cursor to indicate it's not clickable
-            }
-        });
+    // Custom Event Cell for Mobile - Shows Dots
+    const MobileEventDots: React.FC<{ event: IEventData }> = ({ event }) => {
+        return (
+            <div
+                className={styles.mobileDot}
+                style={{
+                    backgroundColor: event.colorNumber,
+                }}
+                data-event={event.id}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleEventClickToOpenModal(event.id.toString(), e as unknown as React.MouseEvent);
+                }}
+            />
+        );
     };
 
-    const defaultDate = useMemo(() => new Date(2015, 3, 1), [])
+    // Handle date cell click to show events modal
+    const handleDateCellClick = (date: Date) => {
+        if (!isMobile) return;
 
+        // Filter events that span this date (including multi-day events)
+        const dateEvents = processedEvents.filter((event: IEventData) => {
+            const eventStart = moment(event.start).startOf('day');
+            const eventEnd = moment(event.end).startOf('day');
+            const cellDate = moment(date).startOf('day');
+
+            // Check if the cell date falls between event start and end (inclusive)
+            return cellDate.isSameOrAfter(eventStart) && cellDate.isSameOrBefore(eventEnd);
+        });
+
+        // If there's only one event, open it directly
+        if (dateEvents.length === 1) {
+            setCurrentEvent(dateEvents[0]);
+            setActiveModal(true);
+        }
+        // If multiple events, you could show a list or open the first one
+        else if (dateEvents.length > 1) {
+            setCurrentEvent(dateEvents[0]); // Open first event, or you can create a list modal
+            setActiveModal(true);
+        }
+    };
+
+    // Custom Date Cell Wrapper
+    const CustomDateCellWrapper = ({ children, value }: any) => {
+        if (!isMobile) {
+            return React.cloneElement(React.Children.only(children), {
+                onDoubleClick: (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                },
+                onClick: (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                },
+                style: {
+                    ...children.props.style,
+                    cursor: 'default',
+                }
+            });
+        }
+
+        // Mobile view - add dots under the date
+        // Filter events that span this date (including multi-day events)
+        const dateEvents = processedEvents.filter((event: IEventData) => {
+            const eventStart = moment(event.start).startOf('day');
+            const eventEnd = moment(event.end).startOf('day');
+            const cellDate = moment(value).startOf('day');
+
+            // Check if the cell date falls between event start and end (inclusive)
+            return cellDate.isSameOrAfter(eventStart) && cellDate.isSameOrBefore(eventEnd);
+        });
+
+        const hasEvents = dateEvents.length > 0;
+
+        return (
+            <div
+                className={`${styles.mobileDateCellWrapper} ${hasEvents ? styles.hasEvents : ''}`}
+                onClick={() => hasEvents && handleDateCellClick(value)}
+                style={{ cursor: hasEvents ? 'pointer' : 'default' }}
+            >
+                {children}
+                {hasEvents && (
+                    <div className={styles.mobileDotsContainer}>
+                        {dateEvents.slice(0, 3).map((event: IEventData, index: number) => (
+                            <div
+                                key={event.id}
+                                className={styles.mobileDot}
+                                style={{
+                                    backgroundColor: event.colorNumber,
+                                }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEventClickToOpenModal(event.id.toString(), e as unknown as React.MouseEvent);
+                                }}
+                            />
+                        ))}
+                        {dateEvents.length > 3 && (
+                            <span className={styles.moreEventsIndicator}>+{dateEvents.length - 3}</span>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const defaultDate = useMemo(() => new Date(2015, 3, 1), []);
 
     // Add this CSS to close popup on scroll
     useEffect(() => {
@@ -300,18 +397,9 @@ const Events: React.FC<IEvents> = ({ eventListData, addedCalendarEvent, setShowL
             document.removeEventListener('click', handleScrollOrClick, true);
         };
     }, []);
-    
+
     return (
-        <div className={`${styles.eventsContainer} ${styles.eventsContainerGlobal} ${styles.showRtl}`}>
-            <div className={styles.pageHeader}>
-                <div className={styles.pageTitle}>
-                    <FontAwesomeIcon icon={faCalendarAlt} className={styles.faCalendarAlt} />
-                    <h1>אירועי הקבוצה</h1>
-                </div>
-                <p className={styles.pageDescription}>
-                    עקוב אחר כל האירועים והפעילויות של חמת ועמוד לזכור תאריכים חשובים
-                </p>
-            </div>
+        <div className={`${styles.eventsContainer} ${styles.eventsContainerGlobal} ${styles.showRtl} ${isMobile ? styles.mobileView : ''}`}>
 
             <div className={styles.eventsLayout}>
                 <div className={styles.mainContent}>
@@ -348,53 +436,27 @@ const Events: React.FC<IEvents> = ({ eventListData, addedCalendarEvent, setShowL
                             <Calendar
                                 defaultDate={defaultDate}
                                 localizer={localizer}
-                                events={processedEvents}
+                                events={isMobile ? [] : processedEvents} // Hide events in mobile, show dots via dateCellWrapper
                                 startAccessor="start"
                                 endAccessor="end"
                                 view="month"
-                                date={currentMonth} // controlled current month
-                                onNavigate={setCurrentMonth} // allow clicks on arrows or dates
+                                date={currentMonth}
+                                onNavigate={setCurrentMonth}
                                 onRangeChange={handleRangeChange}
                                 onSelectEvent={handleSelectEvent}
                                 style={{ height: '50vh' }}
-                                toolbar={false} // show toolbar so user can switch views
-                                popup
+                                toolbar={false}
+                                popup={!isMobile} // Disable popup in mobile
                                 views={{
-                                    month: true,       // default month view     // your custom 3-day week view
+                                    month: true,
                                 }}
                                 components={{
-                                    header: () => null, // remove built-in header if needed
-                                    event: CustomEvent,
+                                    header: () => null,
+                                    event: isMobile ? MobileEventDots : CustomEvent,
                                     dateCellWrapper: CustomDateCellWrapper,
                                 }}
                             />
                         </>
-                    </div>
-                </div>
-
-                <div className={styles.sidebar}>
-                    <div className={styles.upcomingEvents}>
-                        <div className={styles.widgetHeader}>
-                            <h3 className={styles.widgetTitle}>
-                                <FontAwesomeIcon icon={faClock} />
-                                אירועים קרובים
-                            </h3>
-                        </div>
-
-                        {/* Upcoming Events Item  */}
-                        <div className={styles.eventsList}>
-                            {processedEvents.map((eventData: any) => (
-                                <EventItem
-                                    key={eventData.id}
-                                    eventData={eventData}
-                                    onEventClick={handleEventClickToOpenModal}
-                                    onAddToCalendar={handleAddToCalendar}
-                                />
-                            ))}
-                            {processedEvents.length === 0 && (
-                                <div >אין אירועים קרובים</div>
-                            )}
-                        </div>
                     </div>
                 </div>
             </div>

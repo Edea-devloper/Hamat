@@ -25,6 +25,14 @@ export const getListItemsBySearch = async (
   // Normalize search query
   const query = (searchQuery || "").toLowerCase().replace(/\//g, "-");
 
+  // BLOCK ALL date-like input
+  const dateLikePattern = /^\d{1,4}[-\/.]\d{1,2}([-/\.]\d{1,4})?$/;
+
+  if (dateLikePattern.test(query)) {
+    return []; // block ALL date formats
+  }
+
+
   // Helper: format date as DD-MM-YYYY
   const formatDate = (d: Date): string => {
     const day = String(d.getDate()).padStart(2, "0");
@@ -62,14 +70,7 @@ export const getListItemsBySearch = async (
 
         let strVal = "";
 
-        if (typeof v === "string" && /^\d{4}-\d{2}-\d{2}T/.test(v)) {
-          const d = new Date(v);
-          strVal = formatDate(d);
-        }
-        else if (v instanceof Date) {
-          strVal = formatDate(v);
-        }
-        else if (typeof v === "object") {
+        if (typeof v === "object") {
           // If this is a Person field, only search Title or Name
           if (userFields.includes(f)) {
             strVal = v.Title || v.Name || "";

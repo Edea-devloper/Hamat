@@ -2,10 +2,10 @@
   "@microsoft/generator-sharepoint": {
     "plusBeta": false,
     "isCreatingSolution": false,
-    "nodeVersion": "18.17.1",
+    "nodeVersion": "18.20.6",
     "sdksVersions": {
       "@microsoft/microsoft-graph-client": "3.0.2",
-      "@microsoft/teams-js": "2.9.1"
+      "@microsoft/teams-js": "2.24.0"
     },
     "version": "1.19.0",
     "libraryName": "hamat",

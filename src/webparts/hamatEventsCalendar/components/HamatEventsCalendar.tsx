@@ -79,7 +79,7 @@ const HamatEventsCalendar: React.FC<IHamatEventsCalendarProps> = ({ eventList, e
         // Otherwise, show events that are for "כל החברות" or overlap with user's companies
         return (
           // this filter to show Default show all company
-          // eventCompanies.includes(filterDefaultValue) || 
+          eventCompanies.includes(filterDefaultValue) ||
           eventCompanies.some(c => userCompanies.includes(c))
         );
       });

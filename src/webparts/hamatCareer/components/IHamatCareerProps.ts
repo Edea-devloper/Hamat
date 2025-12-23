@@ -15,4 +15,12 @@ export interface IHamatCareerProps {
   showAllCompany: string;
   isPropertyPaneOpen: boolean;
   displayMode: DisplayMode;
+  ShareBtnText: string;
+  ApplyBtnText: string;
+  DetailsBtnText: string;
+  applyJobEmailSubject: string;
+  applyJobEmailBody: string;
+  shareJobEmailSubject: string;
+  shareJobEmailBody: string;
+  flowAPIUrl: string;
 }

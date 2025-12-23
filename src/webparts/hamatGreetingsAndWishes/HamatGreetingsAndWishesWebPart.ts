@@ -16,7 +16,7 @@ import * as strings from "HamatGreetingsAndWishesWebPartStrings";
 import HamatGreetingsAndWishes from "./components/HamatGreetingsAndWishes";
 import { IHamatGreetingsAndWishesProps } from "./components/IHamatGreetingsAndWishesProps";
 import { getCurrentUserEmail } from "./Utility/utils";
-import { PropertyFieldMultiSelect, PropertyFieldNumber } from "@pnp/spfx-property-controls";
+import { PropertyFieldColorPicker, PropertyFieldColorPickerStyle, PropertyFieldMultiSelect, PropertyFieldNumber } from "@pnp/spfx-property-controls";
 import { SPFI } from "@pnp/sp";
 import { getSP } from "../hamatEmployeeBirthday/Utility/getSP";
 
@@ -32,6 +32,13 @@ export interface IHamatGreetingsAndWishesWebPartProps {
   selectedColumns: string[];
   greetingWebpartHeight: number;
   SeeAllEmployees: boolean;
+  backgroundColor?: string;
+  emailSubject: string;
+  emailBody: string;
+  NoItemText: string;
+  themeColorForFont: string;
+ userDisplayName: string;
+ userEmail: string;
 }
 
 export default class HamatGreetingsAndWishesWebPart extends BaseClientSideWebPart<IHamatGreetingsAndWishesWebPartProps> {
@@ -52,7 +59,14 @@ export default class HamatGreetingsAndWishesWebPart extends BaseClientSideWebPar
         itemsPerPage: this.properties.itemsPerPage || 1,
         selectedColumns: this.properties.selectedColumns,
         greetingWebpartHeight: this.properties.greetingWebpartHeight,
-        SeeAllEmployees: this.properties.SeeAllEmployees
+        SeeAllEmployees: this.properties.SeeAllEmployees,
+        backgroundColor: this.properties.backgroundColor,
+        emailSubject: this.properties.emailSubject,
+        emailBody: this.properties.emailBody,
+        NoItemText: this.properties.NoItemText,
+        themeColorForFont: this.properties.themeColorForFont,
+         userEmail: this.context.pageContext.user.email,
+        userDisplayName: this.context.pageContext.user.displayName,
       });
 
     ReactDom.render(element, this.domElement);
@@ -179,6 +193,15 @@ export default class HamatGreetingsAndWishesWebPart extends BaseClientSideWebPar
           key: f.InternalName,
           text: f.Title,
         }));
+
+      // Add your 2 static column options here
+      this._listColumns.push(
+        { key: "company", text: "Company" },
+        { key: "position", text: "Position" },
+        // { key: "CompanyName", text: "CompanyName" },
+        { key: "JobTitle", text: "JobTitle" }
+      );
+      
     } catch (err) {
       console.error("Error loading columns:", err);
       this._listColumns = [];
@@ -249,6 +272,39 @@ export default class HamatGreetingsAndWishesWebPart extends BaseClientSideWebPar
                 PropertyPaneToggle("SeeAllEmployees", {
                   label: "See All Employees",
                   checked: this.properties.SeeAllEmployees,
+                }),
+                 PropertyPaneTextField("NoItemText", {
+                  label: "Enter text to show when no items found",
+                 value: this.properties.NoItemText || "",
+                }),
+                PropertyPaneTextField("emailSubject", {
+                  label: "Greeting and Wishes Email Subject",
+                  value: this.properties.emailSubject || "",
+                }),
+                   PropertyPaneTextField("emailBody", {
+                  label: "Greeting and Wishes Email Body",
+                  value: this.properties.emailBody || "",
+                  multiline: true,
+                }),
+                PropertyFieldColorPicker('backgroundColor', {
+                  label: 'Select Background Color',
+                  selectedColor: this.properties.backgroundColor,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: 'colorFieldId'
+                }),
+                PropertyFieldColorPicker("themeColorForFont", {
+                  label: "Select Font Color",
+                  selectedColor: this.properties.themeColorForFont,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: "colorFieldId",
                 }),
               ],
             },

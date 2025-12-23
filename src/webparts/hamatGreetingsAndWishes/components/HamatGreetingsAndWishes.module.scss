@@ -204,6 +204,10 @@
   padding: 20px;
   overflow-y: auto;
 }
+.noItems{
+  text-align: center;
+  color: #323130;
+}
 
 @media (max-width: 1200px) {
   .widgets-grid {

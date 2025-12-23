@@ -12,9 +12,6 @@
 }
 
 .eventsContainer {
-    max-width: 1501px;
-    margin: 0 auto;
-    padding: 24px;
 
     .pageHeader {
         background: #ffffff;
@@ -50,9 +47,7 @@
     }
 
     .eventsLayout {
-        display: grid;
-        grid-template-columns: 1fr 400px;
-        gap: 24px;
+        border: none;
     }
 
     .mainContent {
@@ -79,13 +74,6 @@
         border-left: 1px solid #ddd;
     }
 
-    // Upcoming Events Widget
-    .upcomingEvents {
-        background: #ffffff;
-        border-radius: 8px;
-        padding: 28px 22px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    }
 
     .widgetHeader {
         display: flex;
@@ -114,109 +102,6 @@
         max-height: 83vh;
     }
 
-    .eventItem {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 16px;
-        background: #f8f9fb;
-        border-radius: 8px;
-        border-left: 4px solid #9c27b0;
-        transition: all 0.2s ease;
-        cursor: pointer;
-
-        &:hover {
-            background: #f0f0f0;
-            transform: translateX(-2px);
-        }
-    }
-
-    .eventDate {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: #9c27b0;
-        color: white;
-        padding: 12px 8px;
-        border-radius: 8px;
-        min-width: 60px;
-    }
-
-    .eventDay {
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 1;
-    }
-
-    .eventMonth {
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
-
-    .eventDetails {
-        flex: 1;
-    }
-
-    .eventTitle {
-        font-size: 16px;
-        font-weight: 600;
-        color: #323338;
-        margin-bottom: 4px;
-    }
-
-    .eventMeta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 4px;
-    }
-
-    .metaItem {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        color: #676879;
-        font-size: 13px;
-    }
-
-    .metaIcon {
-        width: 12px;
-    }
-
-    .eventCompany {
-        background: #e3f2fd;
-        color: #1976d2;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .eventActions {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .calendarBtn {
-        background: transparent;
-        color: #9c27b0;
-        border: 1px solid #9c27b0;
-        padding: 6px 12px;
-        border-radius: 4px;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-
-        &:hover {
-            background: #9c27b0;
-            color: white;
-        }
-    }
 
     // Calendar View
     .calendarSection {
@@ -516,6 +401,7 @@
     .eventLinkNoColor {
         color: #676879;
         text-decoration: none;
+        word-break: break-all;
 
         &:hover {
             text-decoration: underline;
@@ -605,7 +491,7 @@
         }
 
         .pageHeader,
-        .upcomingEvents,
+        // .upcomingEvents,
         .calendarSection {
             padding: 20px;
         }
@@ -634,16 +520,6 @@
             padding: 1px 2px;
         }
 
-        .eventItem {
-            flex-direction: column;
-            text-align: center;
-            gap: 12px;
-        }
-
-        .eventActions {
-            flex-direction: row;
-            justify-content: center;
-        }
     }
 
     @media (max-width: 480px) {
@@ -674,6 +550,157 @@
             justify-content: center;
         }
     }
+
+    // Mobile date cell wrapper - wraps the entire cell
+    .mobileDateCellWrapper {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        position: relative;
+        flex-direction: column;
+        // align-items: center;
+        justify-content: flex-start;
+
+        &.hasEvents {
+            cursor: pointer;
+
+            &:active {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        }
+    }
+
+    // Container for dots - positioned under the date number
+    .mobileDotsContainer {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+        flex-wrap: wrap;
+        padding: 2px 0;
+        width: 100%;
+    }
+
+    // Individual dot style
+    .mobileDot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+
+        &:hover {
+            transform: scale(1.3);
+        }
+    }
+
+    // More events indicator
+    .moreEventsIndicator {
+        font-size: 8px;
+        color: #666;
+        margin-left: 2px;
+        font-weight: 600;
+    }
+
+    // Mobile view specific styles
+    .mobileView {
+        .rbc-event {
+            display: none !important;
+        }
+
+        .rbc-row-segment {
+            display: none !important;
+        }
+
+        // Force borders on all cells
+        .rbc-day-bg {
+            // border: 1px solid #ddd !important;
+            border: none !important;
+            border-right: 0 !important;
+            border-bottom: 0 !important;
+
+            // &:last-child {
+            //     border-right: 1px solid #ddd !important;
+            // }
+        }
+
+        .rbc-month-row {
+            border-bottom: 1px solid #ddd !important;
+
+            &:last-child {
+                border-bottom: 1px solid #ddd !important;
+            }
+        }
+
+        .rbc-date-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 4px 2px !important;
+
+            >a {
+                margin-bottom: 2px;
+            }
+        }
+
+        // Ensure all day cells have borders
+        .rbc-day-bg+.rbc-day-bg {
+            border-left: 1px solid #ddd;
+        }
+    }
+
+    // Responsive adjustments
+    @media (max-width: 480px) {
+        .calendarSection {
+            padding: 10px;
+        }
+
+        .calendarHeader {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .calendarNav {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .rbc-month-view {
+            font-size: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .rbc-date-cell {
+            padding: 2px !important;
+            min-height: 50px;
+        }
+
+        .rbc-header {
+            padding: 4px !important;
+            font-size: 11px;
+            border: 1px solid #ddd !important;
+        }
+
+        .rbc-month-row {
+            min-height: 60px;
+        }
+
+        .rbc-button-link {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        // Force grid borders
+        .rbc-row {
+            border-bottom: 1px solid #ddd;
+        }
+    }
+
+
 }
 
 :global {
@@ -747,4 +774,24 @@
     .rbc-overlay [type='popup'] {
         font-size: 14px;
     }
+
+
+    @media (max-width: 600px) {
+
+        // .rbc-date-cell {
+        //     border-right: 1px solid #ddd !important;
+        // }
+
+        // /* The first rbc-row that contains dates, not the header */
+        // .rbc-date-cell:first-child {
+        //     border-right: none !important;
+        // }
+
+        .rbc-row-bg div {
+            border-left: 1px solid #ddd !important;
+        }
+    }
+
+
+
 }

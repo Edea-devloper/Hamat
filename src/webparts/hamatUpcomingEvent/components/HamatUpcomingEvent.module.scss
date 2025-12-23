@@ -1,0 +1,320 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.Upcoming_Events_Container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.showRtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.eventsContainer {
+  .eventsLayout {
+    border: none;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  // Upcoming Events Widget
+  .upcomingEvents {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 28px 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .widgetHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px 12px 10px;
+    border-bottom: 1px solid #f5f6fa;
+  }
+
+  .widgetTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #323338;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eventsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: auto;
+    padding: 0 10px;
+    max-height: 83vh;
+  }
+
+  .eventItem {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    // border-left: 4px solid #9c27b0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f0f0;
+      transform: translateX(-2px);
+    }
+  }
+
+  .eventDate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // background: #9c27b0;
+    color: white;
+    padding: 12px 8px;
+    border-radius: 8px;
+    min-width: 60px;
+  }
+
+  .eventDay {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .eventMonth {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .eventDetails {
+    flex: 1;
+  }
+
+  .eventTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #323338;
+    margin-bottom: 4px;
+  }
+
+  .eventMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .metaItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #676879;
+    font-size: 13px;
+  }
+
+  .metaIcon {
+    width: 12px;
+  }
+
+  .eventCompany {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    .companyBadge {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+
+  .eventActions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &:hover {
+      background: var(--hoverBg);
+    }
+  }
+
+  .calendarBtn {
+    background: transparent;
+    // color: #9c27b0;
+    // border: 1px solid #9c27b0;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover {
+      // background: #9c27b0;
+      color: white !important;
+    }
+  }
+
+  // ---- Modal Styles ----
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .modalContent {
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modalTitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: #323338;
+  }
+
+  .modalClose {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    // color: #9c27b0;
+
+    &:hover {
+      color: #6a1b9a;
+    }
+  }
+
+  .modalDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .detailRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .detailIcon {
+    // color: #9c27b0;
+    margin-top: 3px;
+  }
+
+  .detailContent {
+    flex: 1;
+  }
+
+  .detailLabel {
+    font-weight: 600;
+    color: #323338;
+    margin-bottom: 4px;
+  }
+
+  .detailValue {
+    color: #676879;
+  }
+
+  .modalActions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .btnPrimary {
+    // background: #9c27b0;
+    // border: 1px solid #9c27b0;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+
+    // &:hover {
+    //   background: #7b1fa200 !important;
+    // }
+  }
+
+  .btnSecondary {
+    background: transparent;
+    color: #676879;
+    border: 1px solid #c5c7d0;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    // &:hover {
+    //   border-color: #9c27b0;
+    //   color: #9c27b0;
+    // }
+    &:hover {
+      // background: var(--hoverBg);
+      color: var(--hoverBg);
+      border-color: var(--hoverBg);
+    }
+  }
+
+  .eventLink,
+  .eventLinkNoColor {
+    color: #1976d2;
+    text-decoration: none;
+    word-break: break-all;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

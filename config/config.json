@@ -57,6 +57,14 @@
           "manifest": "./src/webparts/hamatCareer/HamatCareerWebPart.manifest.json"
         }
       ]
+    },
+    "hamat-upcoming-event-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/hamatUpcomingEvent/HamatUpcomingEventWebPart.js",
+          "manifest": "./src/webparts/hamatUpcomingEvent/HamatUpcomingEventWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -68,6 +76,7 @@
     "HamatEmployeeSearchComponentWebPartStrings": "lib/webparts/hamatEmployeeSearchComponent/loc/{locale}.js",
     "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
     "HamatEventsCalendarWebPartStrings": "lib/webparts/hamatEventsCalendar/loc/{locale}.js",
-    "HamatCareerWebPartStrings": "lib/webparts/hamatCareer/loc/{locale}.js"
+    "HamatCareerWebPartStrings": "lib/webparts/hamatCareer/loc/{locale}.js",
+    "HamatUpcomingEventWebPartStrings": "lib/webparts/hamatUpcomingEvent/loc/{locale}.js"
   }
 }

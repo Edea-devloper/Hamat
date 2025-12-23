@@ -53,6 +53,70 @@ const HamatNewEmployee: React.FC<IHamatNewEmployeeProps> = (props) => {
         }
     }, [props.EmployeeList, props.selectedColumns, props.startJobWithinDays, props.SeeAllEmployees]);
 
+    // const processUserData = (text: string, item?: any): string => {
+    //     const userNameFromItem = item?.UserName || "";
+    //     const userMailFromItem = item?.UserMail || "";
+
+    //     return text
+    //         .replace(/\{displayName\}/gi, props.userDisplayName || "")
+    //         .replace(/\{userEmail\}/gi, props.userEmail || "")
+    //         .replace(/\{userName\}/gi, userNameFromItem)
+    //         .replace(/\{userMail\}/gi, userMailFromItem);
+    // };
+
+    const formatDateOnly = (dateValue: string) => {
+        if (!dateValue) return "";
+        return new Date(dateValue).toISOString().split("T")[0];
+    };
+
+    const processUserData = (text: string, item?: any): string => {
+
+        const ID = item?.ID || "";
+        const Title = item?.Title || "";
+        const CompanyName = item?.CompanyName || "";
+        const Company = item?.Company || "";
+        const UserAzureID = item?.UserAzureID || "";
+        const UserName = item?.UserName || "";
+        const UserMail = item?.UserMail || "";
+        const JobTitle = item?.JobTitle || "";
+        const Department = item?.Department || "";
+        const HebrewName = item?.HebrewName || "";
+        const MobilePhone = item?.MobilePhone || "";
+        const OfficePhone = item?.OfficePhone || "";
+        const StartJobDate = formatDateOnly(item?.StartJobDate || "");
+        const BirthDayDate = formatDateOnly(item?.BirthDayDate);
+        const BirthDayDateCurrentYear = formatDateOnly(item?.BirthDayDateCurrentYear);
+        const BirthDayDayofMonth = item?.BirthDayDayofMonth || "";
+        const BirthDayMonthofYear = item?.BirthDayMonthofYear || "";
+        const UserPerson = item?.UserPerson.Title || "";
+        const UserPersonEmail = item?.UserPerson.EMail || "";
+
+
+
+
+        return text
+            .replace(/\{displayName\}/gi, props.userDisplayName || "")
+            .replace(/\{userEmail\}/gi, props.userEmail || "")
+            .replace(/\{ID\}/gi, ID)
+            .replace(/\{Title\}/gi, Title)
+            .replace(/\{CompanyName\}/gi, CompanyName)
+            .replace(/\{Company\}/gi, Company)
+            .replace(/\{UserAzureID\}/gi, UserAzureID)
+            .replace(/\{UserName\}/gi, UserName)
+            .replace(/\{UserMail\}/gi, UserMail)
+            .replace(/\{JobTitle\}/gi, JobTitle)
+            .replace(/\{Department\}/gi, Department)
+            .replace(/\{HebrewName\}/gi, HebrewName)
+            .replace(/\{MobilePhone\}/gi, MobilePhone)
+            .replace(/\{OfficePhone\}/gi, OfficePhone)
+            .replace(/\{StartJobDate\}/gi, StartJobDate)
+            .replace(/\{BirthDayDate\}/gi, BirthDayDate)
+            .replace(/\{BirthDayDateCurrentYear\}/gi, BirthDayDateCurrentYear)
+            .replace(/\{BirthDayDayofMonth\}/gi, BirthDayDayofMonth)
+            .replace(/\{UserPerson\}/gi, UserPerson)
+            .replace(/\{UserPersonEmail\}/gi, UserPersonEmail)
+            .replace(/\{BirthDayMonthofYear\}/gi, BirthDayMonthofYear);
+    };
 
     const loadEmployees = async () => {
         try {
@@ -88,10 +152,8 @@ const HamatNewEmployee: React.FC<IHamatNewEmployeeProps> = (props) => {
 
     const handleEmailClick = (emp: any) => {
         if (emp?.UserMail) {
-            const subject = encodeURIComponent("ברוך הבא לחברה");
-            const body = encodeURIComponent(
-                "שלום, מקווה שהכל טוב.\n\nברוך הבא לצוות שלנו! אנו שמחים שאתה מצטרף אלינו ומאחלים לך הצלחה רבה בתפקידך החדש.\n\nבברכה,\nצוות החברה"
-            );
+            const subject = encodeURIComponent(processUserData(props.EmailSubject || "", emp));
+            const body = encodeURIComponent(props.EmailBody || "");
 
             window.location.href = `mailto:${emp.UserMail}?subject=${subject}&body=${body}`;
         } else {
@@ -101,12 +163,12 @@ const HamatNewEmployee: React.FC<IHamatNewEmployeeProps> = (props) => {
 
     return (
         <div className={styles["widget"] + " " + styles["new-employees-widget"]} style={{ height: props.NewEmployeeWebpartHeight ? `${props.NewEmployeeWebpartHeight}px` : "700px", }}>
-            <div className={styles["widget-header"]}>
+            <div className={styles["widget-header"]} style={{ background: props.backgroundColor }}>
                 <div className={styles["widget-header-left"]}>
                     <div className={styles["widget-icon"]}>
                         <img src={Heart} alt="Heart Icon" />
                     </div>
-                    <div className={styles["widget-title"]}>{props.EmployeeTitle}</div>
+                    <div className={styles["widget-title"]} style={{ color: props.themeColorForFont }}>{props.EmployeeTitle}</div>
                 </div>
             </div>
 
@@ -117,7 +179,7 @@ const HamatNewEmployee: React.FC<IHamatNewEmployeeProps> = (props) => {
                     props.selectedColumns?.length === 0 ? (
                         <p> נא לבחור לפחות עמודה אחת בהגדרות הרכיב</p>
                     ) : (
-                        <p>לא נמצאו עובדים</p>
+                        <p className={styles["no-employees-message"]}>{props.TextForNoEmployee || "לא נמצאו עובדים"}</p>
                     )
                 )}
 
@@ -126,7 +188,7 @@ const HamatNewEmployee: React.FC<IHamatNewEmployeeProps> = (props) => {
 
                     employees.length > 0 &&
                     visibleEmployees.map((emp, idx) => (
-                        <div key={idx} className={styles["new-employee-item"]}>
+                        <div key={idx} className={styles["new-employee-item"]} style={{ borderRight: `3px solid ${props.backgroundColor}` }}>
                             <div className={styles["new-employee-info"]}>
                                 {props.selectedColumns?.map((colKey, colIdx) => {
                                     let value: any = emp?.[colKey];
@@ -209,7 +271,8 @@ const HamatNewEmployee: React.FC<IHamatNewEmployeeProps> = (props) => {
                                     handleEmailClick(emp);
                                 }}
                                 style={{
-                                    background: clickedIndex === idx ? "#4caf50" : undefined
+                                    background: clickedIndex === idx ? "#4caf50" : props.backgroundColor,
+                                    color: props.themeColorForFont
                                 }}
                             >
                                 {clickedIndex === idx ? (

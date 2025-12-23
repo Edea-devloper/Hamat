@@ -1,4 +1,9 @@
-  .job-details-page {
+.career-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+  
+.job-details-page {
       display: block;
       width: 100% !important;
       justify-self: center;
@@ -205,3 +210,4 @@
   .email-contact a:hover {
       text-decoration: underline;
   }
+}

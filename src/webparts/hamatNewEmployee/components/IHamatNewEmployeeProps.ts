@@ -14,4 +14,10 @@ export interface IHamatNewEmployeeProps {
   SeeAllEmployees: boolean;
   NewEmployeeWebpartHeight: any;
   emailColumnKey?: string; // New prop for email column
+  TextForNoEmployee: string;
+  EmailBody: string;
+  EmailSubject: string;
+  backgroundColor?: string;
+  themeColorForFont?:string;
+  userEmail?:string;
 }

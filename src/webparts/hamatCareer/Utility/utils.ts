@@ -21,7 +21,7 @@ export const getcareerListData = async (listId: string): Promise<IJob[]> => {
       console.error("SP context is not initialized.");
       return [];
     }
-
+    const today = new Date().toISOString();
     const items: IJob[] = await sp.web.lists
       .getById(listId)
       .items.select(
@@ -47,6 +47,7 @@ export const getcareerListData = async (listId: string): Promise<IJob[]> => {
         "Attachments", "AttachmentFiles"
       )
       .expand("Author", "HRMail", "AttachmentFiles")
+      .filter(`(UntilDate ge datetime'${today}') or (UntilDate eq null)`)
       .orderBy("Created", false).top(5000)();
 
     return items;

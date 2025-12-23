@@ -3,7 +3,7 @@ import { IEventData } from './CalendarEvent';
 import styles from './EventsCalendar.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBuilding, faCalendar, faCalendarPlus, faCheck, faClock, faInfoCircle, faLink, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { formatEventTime } from '../Utility/helpers';
+import { formatEventTime, getEventTimeText } from '../Utility/helpers';
 
 export interface EventModalProps {
     isOpen: boolean;
@@ -44,7 +44,7 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, eventData, onClose, onA
         >
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
-                    <h2 className={styles.modalTitle}>{eventData.title}</h2>
+                    <h2 className={styles.modalTitle}>{eventData.subject}</h2>
                     <button className={styles.modalClose} onClick={onClose}>&times;</button>
                 </div>
                 <div className={styles.modalDetails}>
@@ -63,7 +63,8 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, eventData, onClose, onA
                         <div className={styles.detailContent}>
                             <div className={styles.detailLabel}>שעות</div>
                             <div className={styles.detailValue}>
-                                {formatEventTime(eventData.start)} {formatEventTime(eventData.end)}
+                                {/* {formatEventTime(eventData.start)} {formatEventTime(eventData.end)} */}
+                                {getEventTimeText(eventData)}
                             </div>
                         </div>
                     </div>

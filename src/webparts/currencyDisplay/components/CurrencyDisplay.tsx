@@ -3,7 +3,7 @@ import styles from './CurrencyDisplay.module.scss';
 import type { ICurrencyDisplayProps } from './ICurrencyDisplayProps';
 import { HttpClient } from '@microsoft/sp-http';
 import ReactCountryFlag from "react-country-flag";
-import { getListItems, syncCountriesWithList, saveCurrencyData } from '../Utility/utils';
+import { getListItems, syncCountriesWithList, saveCurrencyData, cleanOldCurrencyRecords } from '../Utility/utils';
 
 interface ICurrency {
   code: string;
@@ -32,7 +32,7 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
   public async componentDidMount(): Promise<void> {
     // Sync property pane countries with SharePoint list.
     const syncedCountries = await syncCountriesWithList(
-      this.props.context, 
+      this.props.context,
       this.props.countries || [],
       this.props.apiKey,
       this.props.CurrencyList
@@ -89,7 +89,7 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
 
       // Step 5.1: Get today's records from the list.
       const todayRecords = await getListItems(CurrencyList, context, todayStr);
-      
+
       // Create map of today's rates by code.
       const todayRates: { [key: string]: number } = {};
       todayRecords.forEach(record => {
@@ -132,7 +132,7 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
 
       // Step 5.3: Get yesterday's records from the list.
       const yesterdayRecords = await getListItems(CurrencyList, context, yesterdayStr);
-      
+
       // Create map of yesterday's rates by code.
       const yesterdayRates: { [key: string]: number } = {};
       yesterdayRecords.forEach(record => {
@@ -155,7 +155,7 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
         // Prepare data to save for missing codes.
         const dataToSave = missingYesterday.map(code => ({
           Title: code,
-          CountryName: code,
+          // CountryName: code,
           CountryCode: countries.find(c => c.countryName.toUpperCase() === code)?.countryCode || 'US',
           Rate: ilsRate / yesterdayData.rates[code],
           ChangePercent: 0,
@@ -178,25 +178,31 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
         .map(code => {
           const rateToday = todayRates[code];
           const rateYesterday = yesterdayRates[code];
-          
+
           if (rateToday === undefined) {
             console.warn(`Missing today's rate for ${code}`);
             return null;
           }
 
-          const changePercent = rateYesterday !== undefined 
+          const changePercent = rateYesterday !== undefined
             ? ((rateToday - rateYesterday) / rateYesterday) * 100 
-            : 0;  // If no yesterday, assume 0 change
+            : 0;
+          // If no yesterday, assume 0 change
 
-          return { 
-            code, 
-            rate: rateToday, 
-            changePercent 
+          return {
+            code,
+            rate: rateToday,
+            changePercent
           };
         })
         .filter(Boolean) as ICurrency[];
 
       this.setState({ currencies });
+
+      // Cleanup old records after successfully updating today/yesterday data
+      await cleanOldCurrencyRecords(CurrencyList, context);
+
+      console.log("Currency data updated and old records cleaned.");
 
     } catch (error) {
       console.error("Error fetching exchange rates:", error);
@@ -206,7 +212,7 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
   // Step 6: Render method to display currencies in a ticker format.
   public render(): React.ReactElement<ICurrencyDisplayProps> {
     const { currencies, countries } = this.state;
-    
+
     return (
       <div className="dashboard-container">
         <div className={styles['currency-section']}>
@@ -216,7 +222,7 @@ export default class CurrencyDisplay extends React.Component<ICurrencyDisplayPro
                 const isUp = c.changePercent >= 0;
                 const country = countries?.find(ct => ct.countryName.toUpperCase() === c.code);
                 const countryCode = country?.countryCode || 'US';
-                
+
                 return (
                   <div key={c.code} className={styles['currency-item']}>
                     <div>

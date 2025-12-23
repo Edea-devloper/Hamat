@@ -622,104 +622,100 @@
   }
 }
 
-// :global {
-//   div[data-automation-id="CanvasZone-SectionContainer"] {
-//     max-width: none !important;
-//   }
+// :global{
+   
+//     // #SuiteNavWrapper {
+//     //     display: none !important;
+//     // }
+
+//     // #spSiteHeader {
+//     //     display: none;
+//     // }
+
+//     // #spCommandBar {
+//     //     background: var(--background-color);
+
+//     //     .ms-CommandBar-primaryCommand {
+//     //         & > div {
+//     //             display: none;
+//     //         }
+//     //     }
+
+//     //     .ms-CommandBar-secondaryCommand {
+//     //         button[data-automation-id="shareButton"] {
+//     //             display: none;
+//     //         }
+
+//     //         button[data-automation-id="pageCommandBarFocusModeButton"] {
+//     //             display: none;
+//     //         }
+//     //     }
+//     // }
+
+//     // #spLeftNav {
+//     //     display: none;
+//     // }
+
+//     // #spSiteFooter {
+//     //     display: none;
+//     // }
+
+//     // #sp-appBar {
+//     //     display: none;
+//     // }
+
+//     // #CommentsWrapper {
+//     //     display: none;
+//     // }
+
+//     // div[data-automation-id="pageHeader"] {
+//     //     display: none;
+//     // }
+//     div[data-automationid="SimpleFooter"] {
+//         display: none;
+//     }
+//     #CommentsWrapper{
+//     display:none;
 // }
 
-// :global {
-//   #SuiteNavWrapper {
-//     display: none !important;
-//   }
-
-//   #spSiteHeader {
-//     display: none;
-//   }
-
-//   #spCommandBar {
-//     display: block;
-//     background: var(--background-color);
-
-//     .ms-CommandBar-primaryCommand {
-//       &>div {
-//         display: none;
-//       }
-//     }
-
-//     .ms-CommandBar-secondaryCommand {
-//       button[data-automation-id="shareButton"] {
-//         display: none;
-//       }
-
-//       button[data-automation-id="pageCommandBarFocusModeButton"] {
-//         display: none;
-//       }
-//     }
-//   }
-
-//   #spLeftNav {
-//     display: none;
-//   }
-
-//   #spSiteFooter {
-//     display: none;
-//   }
-
-//   #sp-appBar {
-//     display: none;
-//   }
-
-//   #CommentsWrapper {
-//     display: none;
-//   }
-
-//   div[data-automation-id="pageHeader"] {
-//     display: none;
-//   }
-
-//   div[data-automationid="SimpleFooter"] {
-//     display: none;
-//   }
-
-//   #spPageCanvasContent {
-//     height: 100%;
-
-//     .SPCanvas {
-//       height: 100%;
-
-//       .SPCanvas-canvas {
+//     #spPageCanvasContent {
 //         height: 100%;
 
-//         // div * {
-//         //     width: 100%;
-//         //     height: 100%;
-//         // }
+//         .SPCanvas {
+//             height: 100%;
 
-//         .CanvasComponent {
-//           height: 100%;
+//             .SPCanvas-canvas {
+//                 height: 100%;
 
-//           div[data-automation-id="CanvasZone"] {
-//             padding: 0;
+//                 // div * {
+//                 //     width: 100%;
+//                 //     height: 100%;
+//                 // }
 
-//             div[data-automation-id="CanvasZone-SectionContainer"] {
-//               max-width: 100%;
-//               padding-left: 0;
-//               padding-right: 0;
+//                 .CanvasComponent {
+//                     height: 100%;
 
-//               div[data-automation-id="CanvasSection"] {
-//                 padding-left: 0;
-//                 padding-right: 0;
+//                     div[data-automation-id="CanvasZone"] {
+//                         padding: 0;
 
-//                 .ControlZone {
-//                   margin: 0;
-//                   padding: 0;
+//                         div[data-automation-id="CanvasZone-SectionContainer"] {
+//                             max-width: 100%;
+//                             padding-left: 0;
+//                             padding-right: 0;
+
+//                             div[data-automation-id="CanvasSection"] {
+//                                 padding-left: 0;
+//                                 padding-right: 0;
+
+//                                 .ControlZone {
+//                                     margin: 0;
+//                                     padding: 0;
+//                                 }
+//                             }
+//                         }
+//                     }
 //                 }
-//               }
 //             }
-//           }
 //         }
-//       }
 //     }
-//   }
 // }

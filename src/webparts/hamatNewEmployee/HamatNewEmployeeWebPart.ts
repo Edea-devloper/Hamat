@@ -20,6 +20,7 @@ import HamatNewEmployee from './components/HamatNewEmployee';
 import { IHamatNewEmployeeProps } from './components/IHamatNewEmployeeProps';
 import { spfi, SPFI } from "@pnp/sp";
 import { SPFx } from "@pnp/sp";
+import { PropertyFieldColorPicker, PropertyFieldColorPickerStyle } from '@pnp/spfx-property-controls';
 
 export interface IHamatNewEmployeeWebPartProps {
   enableAutoSwitch: boolean | undefined;
@@ -32,6 +33,11 @@ export interface IHamatNewEmployeeWebPartProps {
   switchInterval: number;
   SeeAllEmployees: boolean;
   NewEmployeeWebpartHeight: any;
+  TextForNoEmployee: string;
+  EmailBody: string;
+  EmailSubject: string;
+  backgroundColor?: string;
+  themeColorForFont?:string;
 }
 
 export default class HamatNewEmployeeWebPart extends BaseClientSideWebPart<IHamatNewEmployeeWebPartProps> {
@@ -58,7 +64,13 @@ export default class HamatNewEmployeeWebPart extends BaseClientSideWebPart<IHama
         itemsPerPage: Number(this.properties.itemsPerPage) || 1,
         switchInterval: Number(this.properties.switchInterval) || 5,
         SeeAllEmployees: this.properties.SeeAllEmployees,
-        NewEmployeeWebpartHeight: this.properties.NewEmployeeWebpartHeight
+        NewEmployeeWebpartHeight: this.properties.NewEmployeeWebpartHeight,
+        TextForNoEmployee: this.properties.TextForNoEmployee,
+        EmailBody: this.properties.EmailBody,
+        EmailSubject: this.properties.EmailSubject,
+        backgroundColor: this.properties.backgroundColor,
+        themeColorForFont:this.properties.themeColorForFont,
+        userEmail: this.context.pageContext.user.email,
       }
     );
 
@@ -228,9 +240,39 @@ export default class HamatNewEmployeeWebPart extends BaseClientSideWebPart<IHama
                   label: "See All Employees",
                   checked: this.properties.SeeAllEmployees,
                 }),
+                PropertyPaneTextField('TextForNoEmployee', {
+                  label: 'Enter text to display when no new employees are found'
+                }),
+                PropertyPaneTextField('EmailSubject', {
+                  label: 'New Employee Email Subject'
+                }),
+                PropertyPaneTextField('EmailBody', {
+                  label: 'New Employee Email Body',
+                  multiline: true,
+                }),
                 PropertyPaneTextField("NewEmployeeWebpartHeight", {
                   label: "Set height",
                   value: this.properties.NewEmployeeWebpartHeight?.toString() || "",
+                }),
+                PropertyFieldColorPicker('backgroundColor', {
+                  label: 'Select Background Color',
+                  selectedColor: this.properties.backgroundColor,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: 'colorFieldId'
+                }),
+                 PropertyFieldColorPicker("themeColorForFont", {
+                  label: "Select Font Color",
+                  selectedColor: this.properties.themeColorForFont,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: "colorFieldId",
                 }),
               ]
             }

@@ -1,9 +1,27 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
+import 'dayjs/locale/he';
 import styles from './HamatEmployeeBirthday.module.scss';
 import type { IHamatEmployeeBirthdayProps } from './IHamatEmployeeBirthdayProps';
 import { getListItems } from '../Utility/utils';
+dayjs.locale('he');
+
+const hebrewMonths: Record<string, string> = {
+  January: "ינואר",
+  February: "פברואר",
+  March: "מרץ",
+  April: "אפריל",
+  May: "מאי",
+  June: "יוני",
+  July: "יולי",
+  August: "אוגוסט",
+  September: "ספטמבר",
+  October: "אוקטובר",
+  November: "נובמבר",
+  December: "דצמבר"
+};
+
 
 const AllCompany = "כל החברות";
 const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => {
@@ -135,7 +153,7 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
               // First, sort by whether birthday is today
               if (a.IsBirthdayToday && !b.IsBirthdayToday) return -1;
               if (!a.IsBirthdayToday && b.IsBirthdayToday) return 1;
-              
+
               // Then by date within the month (day of month)
               return a.BirthdayThisYear.date() - b.BirthdayThisYear.date();
             });
@@ -146,7 +164,7 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
               // First, sort by whether birthday is today
               if (a.IsBirthdayToday && !b.IsBirthdayToday) return -1;
               if (!a.IsBirthdayToday && b.IsBirthdayToday) return 1;
-              
+
               // Then by birthday date in ascending order
               return a.BirthdayThisYear.diff(b.BirthdayThisYear, "day");
             })
@@ -173,12 +191,74 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
     props.selectedColumns,
   ]);
 
+  const hexToRGBA = (hex: string, alpha: number): string => {
+    if (!hex.startsWith('#')) return hex; // fallback
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
+  const processUserData = (text: string, item?: any): string => {
+
+    const ID = item?.ID || "";
+    const Title = item?.Title || "";
+    const CompanyName = item?.CompanyName || "";
+    const Company = item?.Company || "";
+    const UserAzureID = item?.UserAzureID || "";
+    const UserName = item?.UserName || "";
+    const UserMail = item?.UserMail || "";
+    const JobTitle = item?.JobTitle || "";
+    const Department = item?.Department || "";
+    const HebrewName = item?.HebrewName || "";
+    const MobilePhone = item?.MobilePhone || "";
+    const OfficePhone = item?.OfficePhone || "";
+    const StartJobDate = formatDateOnly(item?.StartJobDate || "");
+    const BirthDayDate = formatDateOnly(item?.BirthDayDate);
+    const BirthDayDateCurrentYear = formatDateOnly(item?.BirthDayDateCurrentYear);
+    const BirthDayDayofMonth = item?.BirthDayDayofMonth || "";
+    const BirthDayMonthofYear = item?.BirthDayMonthofYear || "";
+    const UserPerson = item?.UserPerson.Title || "";
+    const UserPersonEmail = item?.UserPerson.EMail || "";
+
+
+
+
+    return text
+      .replace(/\{displayName\}/gi, props.userDisplayName || "")
+      .replace(/\{userEmail\}/gi, props.userEmail || "")
+      .replace(/\{ID\}/gi, ID)
+      .replace(/\{Title\}/gi, Title)
+      .replace(/\{CompanyName\}/gi, CompanyName)
+      .replace(/\{Company\}/gi, Company)
+      .replace(/\{UserAzureID\}/gi, UserAzureID)
+      .replace(/\{UserName\}/gi, UserName)
+      .replace(/\{UserMail\}/gi, UserMail)
+      .replace(/\{JobTitle\}/gi, JobTitle)
+      .replace(/\{Department\}/gi, Department)
+      .replace(/\{HebrewName\}/gi, HebrewName)
+      .replace(/\{MobilePhone\}/gi, MobilePhone)
+      .replace(/\{OfficePhone\}/gi, OfficePhone)
+      .replace(/\{StartJobDate\}/gi, StartJobDate)
+      .replace(/\{BirthDayDate\}/gi, BirthDayDate)
+      .replace(/\{BirthDayDateCurrentYear\}/gi, BirthDayDateCurrentYear)
+      .replace(/\{BirthDayDayofMonth\}/gi, BirthDayDayofMonth)
+      .replace(/\{UserPerson\}/gi, UserPerson)
+      .replace(/\{UserPersonEmail\}/gi, UserPersonEmail)
+      .replace(/\{BirthDayMonthofYear\}/gi, BirthDayMonthofYear);
+  };
 
   const handleSendMail = (id: string) => {
     setChangeGiftIconIntoCheckIcon((prev) => ({ ...prev, [id]: true }));
     setTimeout(() => {
       setChangeGiftIconIntoCheckIcon((prev) => ({ ...prev, [id]: false }));
     }, 1000);
+  };
+
+  const formatDateOnly = (dateValue: string) => {
+    if (!dateValue) return "";
+    return new Date(dateValue).toISOString().split("T")[0];
   };
 
   // Determine visible employees based on enableAutoSwitch
@@ -190,12 +270,12 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
   return (
 
     <div className={`${styles['widget']} ${styles['birthday-widget']}`} style={{ height: props.birthdayWebpartHeight ? `${props.birthdayWebpartHeight}px` : "700px", }}>
-      <div className={styles['widget-header']}>
+      <div className={styles['widget-header']} style={{ background: props.themeColorForBackground || '' }}>
         <div className={styles['widget-header-left']}>
           <div className={styles['widget-icon']}>
             <img src={require('../assets/Gift.svg')} alt="Gift Icon" />
           </div>
-          <div className={styles['widget-title']}>{props.BirthDayTitle}</div>
+          <div className={styles['widget-title']} style={{ color: props.themeColorForFont || '' }}>{props.BirthDayTitle}</div>
         </div>
       </div>
 
@@ -206,8 +286,8 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
           style={{
             marginBottom: '16px',
             width: '100%',
-            background: '#ff4081',
-            color: 'white',
+            background: props.themeColorForBackground || '#ff4081',
+            color: props.themeColorForFont || 'white',
             border: 'none',
             padding: '10px',
             borderRadius: '6px',
@@ -224,27 +304,39 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
             נא לבחור לפחות עמודה אחת בהגדרות הרכיב
           </div>
         ) : employees.length === 0 ? (
-          <div style={{ direction: "rtl", textAlign: "right" }}>
-            אין ימי הולדת {props.SeeAllEmployees ? '' : 'בתקופה זו'}
+          <div style={{ direction: "rtl", textAlign: "center" }}>
+            {props.noBirthdaysText || `אין ימי הולדת ${props.SeeAllEmployees ? '' : 'בתקופה זו'}`}
           </div>
         ) : (
           visibleEmployees.map((emp) => (
-            <div key={emp.Id} className={styles['birthday-item']}>
+            <div key={emp.Id} className={styles['birthday-item']} style={{ borderRight: `3px solid ${props.themeColorForBackground || ''}` }}>
               <button
                 className={`${styles['birthday-action']} ${changeGiftIconIntoCheckIcon[emp.Id] ? styles['birthday-action-checked'] : ''
                   }`}
+                style={{
+                  backgroundColor: props.themeColorForBackground || '',
+                  color: props.themeColorForFont || ''
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   // open mail client with subject/body
                   const email = emp.UserMail || "";
-                  const subject = emp.HebrewName ? `יום הולדת שמח ${emp.HebrewName}!` : "יום הולדת שמח!";
-                  const body = emp.HebrewName
-                    ? `שלום ${emp.HebrewName},\n\nמאחלים לך יום הולדת שמח!\nתיהנה מהיום המיוחד שלך!\nבברכה,\n\n[שמך]`
-                    : `מאחלים לך יום הולדת שמח!\nתיהנה מהיום המיוחד שלך!\nבברכה,\n\n[שמך]`;
+                  const subjectText = processUserData(props.emailSubject || "", emp);
+                  // const bodyText = props.emailBody?.trim() || " ";
+                  const bodyText = processUserData(props.emailBody?.trim() || " ", emp);
+
+                  // const subject = emp.HebrewName
+                  //   ? `${subjectText} ${emp.HebrewName}!`
+                  //   : `${subjectText}!`;
+
+                  // const body = emp.HebrewName
+                  //   ? `${emp.HebrewName},\n\n ${bodyText}`
+                  //   : bodyText;
+
                   // Use JavaScript to open mailto so browser preview is clean
                   window.location.href = `mailto:${email}?subject=${encodeURIComponent(
-                    subject
-                  )}&body=${encodeURIComponent(body)}`;
+                    subjectText
+                  )}&body=${encodeURIComponent(bodyText)}`;
                   // mark clicked
                   setChangeGiftIconIntoCheckIcon((prev) => ({ ...prev, [emp.Id]: true }));
                   setTimeout(() => {
@@ -270,6 +362,11 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
                     // Skip this column entirely if value is null or undefined
                     if (displayValue === undefined || displayValue === null) {
                       return null;
+                    }
+                    // Handle text columns and special cases
+                    if (colKey === "BirthDayDayofMonth") {
+                      // Convert English month text to Hebrew
+                      displayValue = hebrewMonths[displayValue] || displayValue;
                     }
 
                     // Handle boolean columns
@@ -298,12 +395,13 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
                     else if (typeof displayValue === "string" && !isNaN(Date.parse(displayValue)) && displayValue.includes("-")) {
                       switch (colKey) {
                         case "BirthDayDate":
-                          displayValue = dayjs(displayValue).format('MMMM D');
+                          displayValue = dayjs(displayValue).locale('he').format('DD/MM');
                           break;
                         case "StartJobDate":
                         case "BirthDayDateCurrentYear":
-                          displayValue = dayjs(displayValue).format('MMMM D, YYYY');
+                          displayValue = dayjs(displayValue).locale('he').format('DD/MM/YYYY');
                           break;
+
                         case "ManualUpdate":
                           if (emp[colKey] !== undefined && emp[colKey] !== null) {
                             displayValue = emp[colKey] ? "Yes" : "No";
@@ -318,7 +416,7 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
                           break;
 
                         default:
-                          displayValue = dayjs(displayValue).format('MMMM D, YYYY');
+                          displayValue = dayjs(displayValue).locale('he').format('MMMM D, YYYY');
                       }
                     }
                     // Handle email formatting
@@ -355,7 +453,11 @@ const HamatEmployeeBirthday: React.FC<IHamatEmployeeBirthdayProps> = (props) => 
 
                 {/* Decade celebration */}
                 {isDecade(emp.BirthDayDate) && (
-                  <div className={styles['decade-celebration']}>{props.decadeMessage}</div>
+                  <div className={styles['decade-celebration']} style={{
+                    color: props.themeColorForFont || '', background: props.themeColorForBackground
+                      ? hexToRGBA(props.themeColorForBackground, 0.1) // 10% opacity
+                      : '',
+                  }}>{props.decadeMessage}</div>
                 )}
               </div>
 

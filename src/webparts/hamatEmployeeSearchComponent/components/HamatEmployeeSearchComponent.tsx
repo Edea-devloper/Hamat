@@ -13,6 +13,13 @@ interface IHamatEmployeeSearchComponentProps {
   Columns: any[];
   EmployeeSearchComponentTitle?: string;
   EmployeeSearchComponentWebpartHeight?: number;
+  placeholderText?: string;
+  emailBody?: string;
+  emailSubject?: string;
+  backgroundColor?: string;
+  themeColorForFont?: string;
+  userEmail?: string;
+  userDisplayName?: string;
 }
 interface IListInfo { id?: string; title?: string }
 
@@ -24,6 +31,13 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
   Columns,
   EmployeeSearchComponentTitle,
   EmployeeSearchComponentWebpartHeight,
+  emailSubject,
+  emailBody,
+  placeholderText,
+  backgroundColor,
+  themeColorForFont,
+  userEmail,
+  userDisplayName
 
 }) => {
   const [items, setItems] = useState<any[]>([]);
@@ -44,6 +58,33 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
       return;
     }
 
+    // const datePattern = /^(\d{1,2}[\/\-.]\d{1,2}([\/\-.]\d{2,4})?)$/;
+    // BLOCK ALL date-like input
+    const datePattern = /^\d{1,4}[-\/.]\d{1,2}([-/\.]\d{1,4})?$/;
+
+
+    // Strict check for numeric-only phone numbers with 0 or 1 dash
+    const phonePattern = /^[0-9\-]+$/;
+    const dashCount = (trimmed.match(/-/g) || []).length;
+
+    // If it's a date → BLOCK
+    if (datePattern.test(trimmed)) {
+      setItems([]);
+      return;
+    }
+
+    // If it's phone-like → ALLOW
+    if (phonePattern.test(trimmed) && dashCount <= 1) {
+      // allow search
+    } else {
+      // If it contains digits + more than 1 separator → BLOCK as date
+      const sepCount = (trimmed.match(/[\/\-.]/g) || []).length;
+      if (sepCount >= 2) {
+        setItems([]);
+        return;
+      }
+    }
+
     const handler = setTimeout(async () => {
       setLoading(true);
       try {
@@ -54,22 +95,22 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
       } finally {
         setLoading(false);
       }
-    }, 300);
+    }, 1000);
 
     return () => clearTimeout(handler);
   }, [search, EmployeeList, context, selectedColumns]);
 
   // Handle contact button click
-  const handleEmailButtonClick  = (index: number, item: any) => {
+  const handleEmailButtonClick = (index: number, item: any) => {
     setClickedIndex(index);
 
     const email = item?.Email || item?.UserMail;
     if (email) {
-      const subject = encodeURIComponent("יצירת קשר מהחברה");
-      const body = encodeURIComponent("שלום, מקווה שהכל טוב. פונים אליך מהחברה.");
+      const subject = encodeURIComponent(processUserData(emailSubject || "", item));
+      const body = encodeURIComponent(emailBody || "");
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     } else {
-      alert("No email address found for this user.");
+      console.log("No email address found for this user.");
     }
 
     setTimeout(() => {
@@ -137,22 +178,90 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
   };
 
 
+  const formatDateOnly = (dateValue: string) => {
+    if (!dateValue) return "";
+    return new Date(dateValue).toISOString().split("T")[0];
+  };
+
+
+  // const processUserData = (text: string, item?: any): string => {
+  //   const userNameFromItem = item?.UserName || "";
+  //   const userMailFromItem = item?.UserMail || "";
+
+  //   return text
+  //     .replace(/\{displayName\}/gi, userDisplayName || "")
+  //     .replace(/\{userEmail\}/gi, userEmail || "")
+  //     .replace(/\{userName\}/gi, userNameFromItem)
+  //     .replace(/\{userMail\}/gi, userMailFromItem);
+  // };
+
+  const processUserData = (text: string, item?: any): string => {
+
+    const ID = item?.ID || "";
+    const Title = item?.Title || "";
+    const CompanyName = item?.CompanyName || "";
+    const Company = item?.Company || "";
+    const UserAzureID = item?.UserAzureID || "";
+    const UserName = item?.UserName || "";
+    const UserMail = item?.UserMail || "";
+    const JobTitle = item?.JobTitle || "";
+    const Department = item?.Department || "";
+    const HebrewName = item?.HebrewName || "";
+    const MobilePhone = item?.MobilePhone || "";
+    const OfficePhone = item?.OfficePhone || "";
+    const StartJobDate = formatDateOnly(item?.StartJobDate || "");
+    const BirthDayDate = formatDateOnly(item?.BirthDayDate);
+    const BirthDayDateCurrentYear = formatDateOnly(item?.BirthDayDateCurrentYear);
+    const BirthDayDayofMonth = item?.BirthDayDayofMonth || "";
+    const BirthDayMonthofYear = item?.BirthDayMonthofYear || "";
+    const UserPerson = item?.UserPerson.Title || "";
+    const UserPersonEmail = item?.UserPerson.EMail || "";
+
+
+
+
+    return text
+      .replace(/\{displayName\}/gi, userDisplayName || "")
+      .replace(/\{userEmail\}/gi, userEmail || "")
+      .replace(/\{ID\}/gi, ID)
+      .replace(/\{Title\}/gi, Title)
+      .replace(/\{CompanyName\}/gi, CompanyName)
+      .replace(/\{Company\}/gi, Company)
+      .replace(/\{UserAzureID\}/gi, UserAzureID)
+      .replace(/\{UserName\}/gi, UserName)
+      .replace(/\{UserMail\}/gi, UserMail)
+      .replace(/\{JobTitle\}/gi, JobTitle)
+      .replace(/\{Department\}/gi, Department)
+      .replace(/\{HebrewName\}/gi, HebrewName)
+      .replace(/\{MobilePhone\}/gi, MobilePhone)
+      .replace(/\{OfficePhone\}/gi, OfficePhone)
+      .replace(/\{StartJobDate\}/gi, StartJobDate)
+      .replace(/\{BirthDayDate\}/gi, BirthDayDate)
+      .replace(/\{BirthDayDateCurrentYear\}/gi, BirthDayDateCurrentYear)
+      .replace(/\{BirthDayDayofMonth\}/gi, BirthDayDayofMonth)
+      .replace(/\{UserPerson\}/gi, UserPerson)
+      .replace(/\{UserPersonEmail\}/gi, UserPersonEmail)
+      .replace(/\{BirthDayMonthofYear\}/gi, BirthDayMonthofYear);
+  };
+
+
   return (
-    <div className={styles["widget"] + " " + styles["directory-widget"]} style={{ height: EmployeeSearchComponentWebpartHeight ? `${EmployeeSearchComponentWebpartHeight}px` : "700px", }}>
-      <div className={styles["widget-header"]}>
+    <div className={styles["widget"] + " " + styles["directory-widget"]} style={{ height: EmployeeSearchComponentWebpartHeight ? `${EmployeeSearchComponentWebpartHeight}px` : "700px" }}>
+      <div className={styles["widget-header"]} style={{ background: backgroundColor }}>
         <div className={styles["widget-header-left"]}>
           <div className={styles["widget-icon"]}>
             <img src={SearchImage} alt="Search Icon" />
           </div>
-          <div className={styles["widget-title"]}>{EmployeeSearchComponentTitle}</div>
+          <div className={styles["widget-title"]} style={{ color: themeColorForFont }}>{EmployeeSearchComponentTitle}</div>
         </div>
       </div>
 
       <div className={styles["widget-content"]}>
         <input
           type="text"
+          style={{ borderColor: backgroundColor }}
           className={styles["search-box"]}
-          placeholder="חפש עובד..."
+          placeholder={placeholderText || "חפש עובד..."}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -168,7 +277,7 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
         ) : (
           Array.isArray(items) &&
           items.map((item, i) => (
-            <div className={styles["directory-item"]} key={i}>
+            <div className={styles["directory-item"]} key={i} style={{ borderRight: `3px solid ${backgroundColor}`, }}>
               <div className={styles["directory-info"]}>
                 {Array.isArray(selectedColumns) && selectedColumns.length > 0 && (
                   selectedColumns.map((colKey, colIdx) => {
@@ -212,23 +321,6 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
                             );
                           } else if (typeof fieldValue === "boolean") {
                             return fieldValue ? "Yes" : "No";
-                          } else if (
-                            typeof fieldValue === "string" &&
-                            /^\d{4}-\d{2}-\d{2}T/.test(fieldValue)
-                          ) {
-                            // Format ISO string date
-                            const d = new Date(fieldValue);
-                            const day = String(d.getDate()).padStart(2, "0");
-                            const month = String(d.getMonth() + 1).padStart(2, "0");
-                            const year = d.getFullYear();
-                            return `${day}-${month}-${year}`;
-                          } else if (fieldValue instanceof Date) {
-                            // Format Date objects
-                            const d = fieldValue;
-                            const day = String(d.getDate()).padStart(2, "0");
-                            const month = String(d.getMonth() + 1).padStart(2, "0");
-                            const year = d.getFullYear();
-                            return `${day}-${month}-${year}`;
                           } else {
                             return fieldValue.toString();
                           }
@@ -242,9 +334,11 @@ const HamatEmployeeSearchComponent: React.FC<IHamatEmployeeSearchComponentProps>
 
               </div>
               <button className={styles["contact-btn"]}
-                onClick={() => handleEmailButtonClick (i, item)}
+                onClick={() => handleEmailButtonClick(i, item)}
                 style={{
-                  background: clickedIndex === i ? "#00d084" : undefined,
+                  // background: clickedIndex === i ? "#00d084" : undefined,
+                  background: clickedIndex === i ? "#00d084" : backgroundColor,
+                  color: themeColorForFont
                 }}>
                 {clickedIndex === i ? (
                   <i className="fas fa-paper-plane"></i>

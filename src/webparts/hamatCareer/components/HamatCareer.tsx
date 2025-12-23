@@ -7,21 +7,59 @@ import { getcareerListData, getCurrentUserPermission } from "../Utility/utils";
 import { ICareerUserProfile, IJob } from "../Utility/ISPInterface";
 import Loader from "./Loader/Loader";
 import { DisplayMode } from "@microsoft/sp-core-library";
+import ShareJobModal from "./JobShareModal";
 
 // Event and user defult value filter 
 const filterDefaultValue = "כל החברות";
 // Filter 
-const companiesFilter = ["כל החברות", "חמת", "חזיבנק", "אלוני", "מטבחי זיו", "פורמקס"];
-const citiesFilter = ["כל הערים", "תל אביב", "חיפה", "ירושלים", "באר שבע", "אשדוד"];
+let companiesFilter = ["כל החברות", "חמת", "חזיבנק", "אלוני", "מטבחי זיו", "פורמקס"];
+let citiesFilter = ["כל הערים", "תל אביב", "חיפה", "ירושלים", "באר שבע", "אשדוד"];
 
-const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeePermissionList, isApplyButtonVisible, HREmail, context, showAllCompany, isPropertyPaneOpen, displayMode }) => {
+const HamatCareer: React.FC<IHamatCareerProps> = ({ Title,
+  careerList,
+  employeePermissionList,
+  isApplyButtonVisible,
+  HREmail,
+  context,
+  showAllCompany,
+  isPropertyPaneOpen,
+  displayMode,
+  ShareBtnText,
+  ApplyBtnText,
+  DetailsBtnText,
+  applyJobEmailSubject,
+  applyJobEmailBody,
+  shareJobEmailSubject,
+  shareJobEmailBody,
+  flowAPIUrl
+}) => {
 
   const [showDetails, setShowDetails] = React.useState(false);
   const [careerListData, setCareerListData] = React.useState<IJob[]>([]);
   const [filteredJobs, setFilteredJobs] = React.useState<IJob[]>([]);
   const [selectedJob, setSelectedJob] = React.useState<IJob | null>(null);
   const [showLoader, setShowLoader] = React.useState<boolean>(false);
+  const [savedScroll, setSavedScroll] = React.useState(0);
+  const [isNavigating, setIsNavigating] = React.useState(false);
+  const [isShareOpen, setIsShareOpen] = React.useState(false);
+  const [jobId, setJobId] = React.useState(0);
 
+  function getScrollParent(element: HTMLElement): HTMLElement | Window {
+    let parent: any = element.parentElement;
+
+    while (parent) {
+      const style = window.getComputedStyle(parent);
+      const overflowY = style.overflowY;
+
+      if (overflowY === "auto" || overflowY === "scroll") {
+        return parent;
+      }
+
+      parent = parent.parentElement;
+    }
+
+    return window;
+  }
 
   // Filter State: start as blank
   const [selectedCompany, setSelectedCompany] = React.useState("כל החברות");
@@ -41,10 +79,43 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
     setFilteredJobs(filtered);
   };
 
-
   const handleShowDetails = (job: IJob) => {
+    // Save current scroll position BEFORE changing state
+    const container = document.querySelector(`.${styles.hamatCareer}`) as HTMLElement;
+    if (container) {
+      const scrollParent: any = getScrollParent(container);
+      const scrollTop = scrollParent instanceof Window ? window.scrollY : scrollParent.scrollTop;
+      setSavedScroll(scrollTop);
+    }
+
+    setIsNavigating(true);
     setSelectedJob(job);
     setShowDetails(true);
+
+    // Use timeout to ensure state updates are processed
+    setTimeout(() => {
+      setIsNavigating(false);
+    }, 100);
+  };
+
+  const handleBack = () => {
+    setIsNavigating(true);
+    setShowDetails(false);
+
+    // Restore scroll position after a brief delay to ensure DOM is updated
+    setTimeout(() => {
+      const container = document.querySelector(`.${styles.hamatCareer}`) as HTMLElement;
+      if (container) {
+        const scrollParent: any = getScrollParent(container);
+
+        if (scrollParent === window) {
+          window.scrollTo(0, savedScroll);
+        } else {
+          scrollParent.scrollTop = savedScroll;
+        }
+      }
+      setIsNavigating(false);
+    }, 50);
   };
 
   // get icons based on company type
@@ -107,6 +178,35 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
       setCareerListData(allCareerData);
       setFilteredJobs(filteredCareer);
 
+      companiesFilter = Array.from(
+        new Set(
+          allCareerData
+            .map((item: { Company: string; }) => item.Company?.trim())
+            .filter((company: any) => company)
+        )
+      );
+
+      citiesFilter = Array.from(
+        new Set(
+          allCareerData
+            .map((item: { Location: string; }) => item.Location?.trim())
+            .filter((location: any) => location)
+        )
+      );
+
+      // Get current URL
+      const urlParams = new URLSearchParams(window.location.search);
+      // Get 'job' query parameter
+      const jobIdParam = urlParams.get("job");
+      // Convert to number safely
+      const jobId = jobIdParam ? Number(jobIdParam) : null;
+
+      if (jobId) {
+        const job = filteredCareer.find((a) => a.Id === jobId);
+        if (job) {
+          handleShowDetails(job);
+        }
+      }
     } catch (error) {
       console.error("Error fetching career data:", error);
     } finally {
@@ -126,26 +226,43 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
     getCareer();
   }, [showAllCompany]);
 
+  // Scroll to top when showing details, but only if we're not restoring a previous position
+  React.useEffect(() => {
+    if (showDetails && !isNavigating) {
+      const container = document.querySelector(`.${styles.hamatCareer}`) as HTMLElement;
+      if (!container) return;
 
-  const handleBack = () => setShowDetails(false);
+      const scrollParent = getScrollParent(container);
 
-  return (
+      if (scrollParent === window) {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      } else {
+        scrollParent.scrollTo({ top: 0, behavior: "auto" });
+      }
+    }
+  }, [showDetails, isNavigating]);
+
+  return (<>
     <div className={styles["hamatCareer"]}>
-
-      {/* Header  */}
-
-      {/* Web part title — currently not needed, so this code is commented out */}
-
-      {/* <div className={styles["header-section"]}>
-        <h1>{Title}</h1>
-        <p>מצאו את העבודה המושלמת עבורכם במגוון רחב של חברות מובילות</p>
-      </div> */}
-
-      {/* Loader  */}
       <Loader visible={showLoader} />
 
       {showDetails ? (
-        <JobDetailsPage job={selectedJob!} onBack={handleBack} isApplyButtonVisible={isApplyButtonVisible} HREmail={HREmail} context={context} />
+        <JobDetailsPage
+          job={selectedJob!}
+          onBack={handleBack}
+          isApplyButtonVisible={isApplyButtonVisible}
+          HREmail={HREmail}
+          context={context}
+          applyJobEmailBody={applyJobEmailBody}
+          applyJobEmailSubject={applyJobEmailSubject}
+          shareJobEmailBody={shareJobEmailBody}
+          shareJobEmailSubject={shareJobEmailSubject}
+          flowAPIUrl={flowAPIUrl}
+          ShareBtnText={ShareBtnText}
+          ApplyBtnText={ApplyBtnText}
+          DetailsBtnText={DetailsBtnText}
+
+        />
       ) : (
         <div className={styles["career-container"]}>
           {/* Filters */}
@@ -163,6 +280,7 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                   value={selectedCompany}
                   onChange={(e) => setSelectedCompany(e.target.value)}
                 >
+                  <option key={0} value="כל החברות">כל החברות</option>
                   {companiesFilter.map((c, i) => (
                     <option key={i} value={c}>{c}</option>
                   ))}
@@ -177,6 +295,7 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
                 >
+                  <option key={0} value="כל הערים">כל הערים</option>
                   {citiesFilter.map((c, i) => (
                     <option key={i} value={c}>{c}</option>
                   ))}
@@ -191,7 +310,6 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                 </button>
               </div>
             </div>
-
           </div>
 
           {/* Jobs */}
@@ -214,11 +332,10 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                   <div className={styles["job-header"]}>
                     <div className={styles["job-id"]}>#{job.Id}</div>
                   </div>
-                  <div className={styles["job-title"]}>{job.Title}</div>
+                  <div className={styles["job-title"]}>{job.JobTitle}</div>
                   <div className={styles["job-company"]}>
                     <div className={styles["company-icon"]}>
                       <i className={getIcon(job.Company)}></i>
-
                     </div>
                     {job.Company}
                   </div>
@@ -238,10 +355,11 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                       className={styles["job-btn"]}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleShareJob(job);
+                        //handleShareJob(job, HREmail, shareJobEmailBody, shareJobEmailSubject, context);
+                        setIsShareOpen(true); setJobId(job?.Id);
                       }}
                     >
-                      <i className="fas fa-share"></i> שתף
+                      <i className="fas fa-share"></i>{ShareBtnText || "שתף"}
                     </button>
                     {/* Applying Btn  */}
                     {
@@ -250,11 +368,10 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                         className={`${styles["job-btn"]} ${styles["secondary"]}`}
                         onClick={(e) => {
                           e.stopPropagation();
-                          // shareAndApplyForJob(job);
-                          handleApplyJob(job, HREmail)
+                          handleApplyJob(job, HREmail, applyJobEmailSubject, applyJobEmailBody, context)
                         }}
                       >
-                        <i className="fas fa-paper-plane"></i> הגשת מועמדות
+                        <i className="fas fa-paper-plane"></i> {ApplyBtnText || "הגשת מועמדות"}
                       </button>)
                     }
                     <button
@@ -264,7 +381,7 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
                         handleShowDetails(job)
                       }}
                     >
-                      <i className="fas fa-info-circle"></i> פרטים
+                      <i className="fas fa-info-circle"></i> {DetailsBtnText || "פרטים"}
                     </button>
                   </div>
                 </div>
@@ -274,8 +391,17 @@ const HamatCareer: React.FC<IHamatCareerProps> = ({ Title, careerList, employeeP
         </div>
       )}
     </div>
+    <ShareJobModal
+      isOpen={isShareOpen}
+      jobId={jobId}
+      onClose={() => setIsShareOpen(false)}
+      senderMail={context.pageContext.user.email}
+      flowAPIUrl={flowAPIUrl}
+    /></>
   );
 };
+
+
 
 export default HamatCareer;
 
@@ -283,34 +409,51 @@ export default HamatCareer;
 const encodeBody = (text: string) => encodeURIComponent(text);
 
 // Share Job handler
-const handleShareJob = (job: IJob) => {
-  const jobUrl = `${window.location.origin}${window.location.pathname}?job=${job.Id}`;
-  const subject = encodeURIComponent(`משרה מעניינת - ${job.Title} ב${job.Company}`);
-  const body = encodeBody(
-    `היי,\n\nמצאתי משרה שעשויה לעניין אותך:\n\n` +
-    `${job.Title}\n` +
-    `חברה: ${job.Company}\n` +
-    `מיקום: ${job.Location}\n` +
-    `היקף: ${job.JobTime}\n\n` +
-    `קישור למשרה המלאה: ${jobUrl}\n\n` +
-    `בהצלחה!`
-  );
-
-  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+const handleShareJob = (job: IJob, HREmail: string, shareJobEmailBody: string, shareJobEmailSubject: string, context: unknown) => {
+  const subject = encodeURIComponent(processUserData(shareJobEmailSubject || '', job, context));
+  const body = encodeBody(processUserData(shareJobEmailBody || '', job, context));
+  window.location.href = `mailto:${job.HRMail?.EMail || HREmail}?subject=${subject}&body=${body}`;
 };
 
 // Apply Job handler
-const handleApplyJob = (job: IJob, HREmail: string) => {
-  const subject = encodeURIComponent(`מועמדות למשרה ${job.Title} - מס' ${job.Id}`);
-  const body = encodeBody(
-    `שלום,\n\nברצוני להגיש מועמדות למשרה:\n\n` +
-    `${job.Title}\n` +
-    `מספר משרה: #${job.Id}\n` +
-    `חברה: ${job.Company}\n\n` +
-    `במקביל, אשלח את קורות החיים שלי.\n\n` +
-    `תודה,`
-  );
-
+const handleApplyJob = (job: IJob, HREmail: string, applyJobEmailSubject: string, applyJobEmailBody: string, context: unknown) => {
+  const subject = encodeURIComponent(processUserData(applyJobEmailSubject || '', job, context));
+  const body = encodeBody(processUserData(applyJobEmailBody || '', job, context));
   // Use HR Email from job object
-  window.location.href = `mailto:${HREmail || job.HRMail?.EMail}?subject=${subject}&body=${body}`;
+  window.location.href = `mailto:${job.HRMail?.EMail || HREmail}?subject=${subject}&body=${body}`;
+};
+
+export const processUserData = (text: string, item?: any, context?: any): string => {
+
+  const Title = item?.Title || "";
+  const JobTitle = item?.JobTitle || "";
+  const Details = item.Details?.replace(/<[^>]+>/g, '');
+  const JobRequirements = item.JobRequirements?.replace(/<[^>]+>/g, '');
+  const HRMail = item?.HRMail?.EMail || "";
+  const Company = item?.Company || "";
+  const Location = item?.Location || "";
+  const Experience = item?.Experience || "";
+  const jobTime = item?.JobTime || "";
+  const Id = item?.Id || "";
+
+
+  const Url = `${window.location.origin}${window.location.pathname}?job=${item.Id}`;
+  const currentUserEmail = context.pageContext.user.email || '';
+  const currentUserName = context.pageContext.user.displayName || '';
+
+
+  return text
+    .replace(/\{Id\}/gi, Id || "")
+    .replace(/\{Url\}/gi, Url || "")
+    .replace(/\{Company\}/gi, Company || "")
+    .replace(/\{Location\}/gi, Location)
+    .replace(/\{JobName\}/gi, JobTitle)
+    .replace(/\{jobTime\}/gi, jobTime)
+    .replace(/\{currentUserEmail\}/gi, currentUserEmail)
+    .replace(/\{currentUserName\}/gi, currentUserName)
+    .replace(/\{Title\}/gi, Title)
+    .replace(/\{Details\}/gi, Details)
+    .replace(/\{JobRequirements\}/gi, JobRequirements)
+    .replace(/\{HRMail\}/gi, HRMail)
+    .replace(/\{Experience\}/gi, Experience);
 };

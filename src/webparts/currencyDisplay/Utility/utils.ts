@@ -22,19 +22,20 @@ export const getListItems = async (
     if (filterDate) {
       // If a date is provided, filter items to that specific day (start to end).
       const startDate = new Date(filterDate);
-      startDate.setHours(0, 0, 0, 0);
+      startDate.setUTCHours(0, 0, 0, 0);
+
       const endDate = new Date(filterDate);
-      endDate.setHours(23, 59, 59, 999);
+      endDate.setUTCHours(23, 59, 59, 999);
 
       items = await _sp.web.lists
         .getById(listId)
         .items.filter(`Date ge datetime'${startDate.toISOString()}' and Date le datetime'${endDate.toISOString()}'`)
-        .select("Id", "Title", "CountryName", "CountryCode", "Rate", "ChangePercent", "Date")();
+        .select("Id", "Title", "CountryCode", "Rate", "Date")();
     } else {
       // Otherwise, fetch up to 5000 recent items without date filter.
       items = await _sp.web.lists
         .getById(listId)
-        .items.select("Id", "Title", "CountryName", "CountryCode", "Rate", "ChangePercent", "Date")
+        .items.select("Id", "Title", "CountryCode", "Rate", "Date")
         .top(5000)();
     }
 
@@ -66,7 +67,7 @@ export const syncCountriesWithList = async (
 
     // Fetch all existing items to check which countries exist.
     const existingItems = await list.items
-      .select("Id", "Title", "CountryName", "CountryCode", "Date")
+      .select("Id", "Title", "CountryCode", "Date")
       .orderBy("Date", true)();
 
     // Build a map of unique countries by Title (currency code).
@@ -101,15 +102,13 @@ export const saveCurrencyData = async (
   context: WebPartContext,
   data: {
     Title: string;
-    CountryName: string;
     CountryCode: string;
     Rate: number;
-    ChangePercent: number;
     Date: string;
   }[]
 ): Promise<void> => {
   try {
-    const _sp = getSP(context); // Initialize SharePoint context.
+    const _sp = getSP(context);
 
     if (!listId) {
       console.error("Currency list not selected in web part properties.");
@@ -118,19 +117,67 @@ export const saveCurrencyData = async (
 
     const list = _sp.web.lists.getById(listId);
 
-    // Add each data item to the list, formatting numbers.
     for (const item of data) {
+
       await list.items.add({
         Title: String(item.Title),
-        CountryName: String(item.CountryName),
         CountryCode: String(item.CountryCode),
-        Rate: item.Rate ? Number(item.Rate).toFixed(4) : "0",
-        ChangePercent: item.ChangePercent ? Number(item.ChangePercent).toFixed(2) : "0",
-        Date: new Date(item.Date).toISOString()
+        Rate: Number(item.Rate).toFixed(4),
+        Date: new Date(item.Date).toISOString(),
       });
     }
   } catch (error) {
     console.error("Error saving currency data:", error);
     throw error;
+  }
+};
+
+
+
+
+export const cleanOldCurrencyRecords = async (
+  listId: string,
+  context: WebPartContext
+): Promise<void> => {
+  try {
+    const _sp = getSP(context);
+    if (!listId) {
+      console.error("Currency list not selected in web part properties.");
+      return;
+    }
+
+    const list = _sp.web.lists.getById(listId);
+
+    // Calculate cutoff date (keep last 4 days)
+    const today = new Date();
+    const cutoffDate = new Date(today);
+    cutoffDate.setDate(today.getDate() - 4); // Keep only today + 4 previous days
+
+    // Fetch all records older than cutoff date
+    const oldItems = await list.items
+      .filter(`Date lt datetime'${cutoffDate.toISOString()}'`)
+      .select("Id", "Title", "Date")
+      .top(5000)();
+
+    if (oldItems.length === 0) {
+      console.log("No old currency records to delete.");
+      return;
+    }
+
+    console.log(`Deleting ${oldItems.length} old records...`);
+
+    // Delete in batches to avoid throttling
+    for (const item of oldItems) {
+      try {
+        await list.items.getById(item.Id).recycle();
+      } catch (err) {
+        console.warn(`Failed to delete record ID ${item.Id}:`, err);
+      }
+    }
+
+    console.log(`Old records cleanup complete. Kept only last 4 days of data.`);
+
+  } catch (error) {
+    console.error("Error cleaning old currency records:", error);
   }
 };

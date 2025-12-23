@@ -64,12 +64,14 @@ export default class CurrencyDisplayWebPart extends BaseClientSideWebPart<ICurre
 
     // Start preloading data immediately (runs in parallel)
     this._dataLoadPromise = this._preloadData();
-    
+
     // Wait for preload to complete before rendering
     // Comment out the line below if you want the webpart to render immediately with loading state
-    await this._dataLoadPromise;
-
+    this._dataLoadPromise = this._preloadData().then(() => {
+      this.render();
+    });
     return Promise.resolve();
+
   }
 
   // Method to preload all necessary data in parallel
@@ -121,7 +123,7 @@ export default class CurrencyDisplayWebPart extends BaseClientSideWebPart<ICurre
     if (propertyPath === 'countries' || propertyPath === 'CurrencyList' || propertyPath === 'apiKey') {
       // Invalidate cache
       this._preloadedData = null;
-      
+
       // Reload data with new configuration
       this._dataLoadPromise = this._preloadData();
       await this._dataLoadPromise;

@@ -7,7 +7,11 @@ export interface IHamatGreetingsAndWishesProps {
   enableAutoSwitch: boolean;
   switchInterval: string | number | any;
   itemsPerPage: string | number | any;
-   selectedColumns: string[];
-   greetingWebpartHeight:number;
-    SeeAllEmployees: boolean; 
+  selectedColumns: string[];
+  greetingWebpartHeight: number;
+  SeeAllEmployees: boolean;
+  backgroundColor?: string;
+  emailSubject: string;
+  emailBody: string;
+  themeColorForFont: string;
 }

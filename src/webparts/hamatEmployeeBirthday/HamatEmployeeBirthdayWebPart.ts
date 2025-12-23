@@ -17,6 +17,8 @@ import HamatEmployeeBirthday from "./components/HamatEmployeeBirthday";
 import { IHamatEmployeeBirthdayProps } from "./components/IHamatEmployeeBirthdayProps";
 import { SPComponentLoader } from "@microsoft/sp-loader";
 import {
+  PropertyFieldColorPicker,
+  PropertyFieldColorPickerStyle,
   PropertyFieldListPicker,
   PropertyFieldListPickerOrderBy,
   PropertyFieldMultiSelect,
@@ -37,6 +39,12 @@ export interface IHamatEmployeeBirthdayWebPartProps {
   SeeAllEmployees: boolean; // Added
   decadeMessage: string;
   birthdayWebpartHeight: number;
+  noBirthdaysText?: string;
+  emailSubject?: string;
+  emailBody?:string
+  themeColorForBackground?: string;
+  themeColorForFont?:string
+  
 }
 
 export default class HamatEmployeeBirthdayWebPart extends BaseClientSideWebPart<IHamatEmployeeBirthdayWebPartProps> {
@@ -64,7 +72,13 @@ export default class HamatEmployeeBirthdayWebPart extends BaseClientSideWebPart<
         switchInterval: Number(this.properties.switchInterval) || 5,
         SeeAllEmployees: this.properties.SeeAllEmployees, // Added
         decadeMessage: this.properties.decadeMessage,
-        birthdayWebpartHeight: this.properties.birthdayWebpartHeight
+        birthdayWebpartHeight: this.properties.birthdayWebpartHeight,
+        noBirthdaysText: this.properties.noBirthdaysText,
+        emailSubject: this.properties.emailSubject,
+        emailBody:this.properties.emailBody,
+        themeColorForBackground: this.properties.themeColorForBackground,
+        themeColorForFont:this.properties.themeColorForFont,
+        userEmail: this.context.pageContext.user.email,
       });
 
     ReactDom.render(element, this.domElement);
@@ -164,26 +178,34 @@ export default class HamatEmployeeBirthdayWebPart extends BaseClientSideWebPart<
   // get columns for select columns dropdown
   private async _loadColumns(listId: string): Promise<void> {
     try {
-      const fields = await this._sp.web.lists.getById(listId).fields
-        .select("InternalName,Title,Hidden,ReadOnlyField,FieldTypeKind")();
+      const fields = await this._sp.web.lists
+        .getById(listId)
+        .fields.select(
+          "InternalName,Title,Hidden,ReadOnlyField,FieldTypeKind"
+        )();
 
       // Define important system columns
-      const importantSystemColumns = ["Created", "Author", "Modified", "Editor"];
+      const importantSystemColumns = [
+        "Created",
+        "Author",
+        "Modified",
+        "Editor",
+      ];
 
       this._listColumns = fields
-        .filter((f: any) =>
-          // Include user-editable columns
-          (!f.Hidden && !f.ReadOnlyField &&
-            [2, 3, 4, 6, 8, 9, 20, 15 ].includes(f.FieldTypeKind))
-          ||
-          // Include important system columns
-          importantSystemColumns.includes(f.InternalName)
+        .filter(
+          (f: any) =>
+            // Include user-editable columns
+            (!f.Hidden &&
+              !f.ReadOnlyField &&
+              [2, 3, 4, 6, 8, 9, 20, 15].includes(f.FieldTypeKind)) ||
+            // Include important system columns
+            importantSystemColumns.includes(f.InternalName)
         )
         .map((f: any) => ({
           key: f.InternalName,
-          text: `${f.Title}`
+          text: `${f.Title}`,
         }));
-
     } catch (err) {
       console.error("Error loading columns:", err);
       this._listColumns = [];
@@ -218,7 +240,7 @@ export default class HamatEmployeeBirthdayWebPart extends BaseClientSideWebPart<
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField("BirthDayTitle", {
-                  label: "Birth Day Title",
+                  label: "BirthDay Title",
                 }),
                 PropertyFieldListPicker("EmployeeList", {
                   label: "Select Employee List",
@@ -273,7 +295,42 @@ export default class HamatEmployeeBirthdayWebPart extends BaseClientSideWebPart<
                 }),
                 PropertyPaneTextField("birthdayWebpartHeight", {
                   label: "Set height",
-                  value: this.properties.birthdayWebpartHeight?.toString() || "",
+                  value:
+                    this.properties.birthdayWebpartHeight?.toString() || "",
+                }),
+                PropertyPaneTextField("noBirthdaysText", {
+                  label: "No Birthdays Message",
+                  description:
+                    "Enter the message to show when there are no birthdays",
+                }),
+                PropertyPaneTextField("emailSubject", {
+                  label: "Employee Birthday Email Subject",
+                  description: "Set the subject line for the birthday email",
+                }),
+                PropertyPaneTextField("emailBody", {
+                  label: "Employee Birthday Email Body",
+                  description: "Set the body line for the birthday email",
+                  multiline: true,
+                }),         
+                PropertyFieldColorPicker("themeColorForBackground", {
+                  label: "Select Background Color",
+                  selectedColor: this.properties.themeColorForBackground,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: "colorFieldId",
+                }),
+                PropertyFieldColorPicker("themeColorForFont", {
+                  label: "Select Font Color",
+                  selectedColor: this.properties.themeColorForFont,
+                  onPropertyChange: this.onPropertyPaneFieldChanged,
+                  properties: this.properties,
+                  disabled: false,
+                  alphaSliderHidden: false,
+                  style: PropertyFieldColorPickerStyle.Full,
+                  key: "colorFieldId",
                 }),
               ],
             },

@@ -16,6 +16,12 @@ export interface IHamatEmployeeBirthdayProps {
   itemsPerPage?: number;
   switchInterval?: number;
   SeeAllEmployees: boolean; // Added
-  decadeMessage:string;
-  birthdayWebpartHeight:number;
+  decadeMessage: string;
+  birthdayWebpartHeight: number;
+  noBirthdaysText?: string;
+  emailSubject?: string; 
+  emailBody?:string;
+  themeColorForBackground?:string
+  themeColorForFont?:string;
+  userEmail?:string;
 }
