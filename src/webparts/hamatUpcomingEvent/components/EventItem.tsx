@@ -45,80 +45,84 @@ const EventItem: React.FC<EventItemProps> = ({ eventData, onEventClick, onAddToC
             data-event={eventData.id}
             onClick={(e) => onEventClick(eventData.id.toString(), e)}
         >
-            {/* defaultColor is set on property pane */}
-            <div className={styles.eventDate} style={{ background: defaultColor }}>
-                <div className={styles.eventDay}>{day}</div>
-                <div className={styles.eventMonth}>{month}</div>
-            </div>
+            <div className={styles.eventTitle}>{eventData.subject}</div>
 
-            <div className={styles.eventDetails}>
-                <div className={styles.eventTitle}>{eventData.subject}</div>
-                <div className={styles.eventMeta}>
-                    <div className={styles.metaItem}>
-                        <FontAwesomeIcon icon={faClock} />
-                        <span>
-                            {/* {eventData.allDayEvent ? 'כל היום' : `${formatEventTime(eventData?.start)} - ${formatEventTime(eventData?.end)}`} */}
-                            {getEventTimeText(eventData)}
-                        </span>
-                    </div>
+            <div className={styles.eventContent}>
+                {/* defaultColor is set on property pane */}
+                <div className={styles.eventDate} style={{ background: defaultColor }}>
+                    <div className={styles.eventDay}>{day}</div>
+                    <div className={styles.eventMonth}>{month}</div>
+                </div>
 
-                    {eventData?.location && eventData.location.trim() !== "" && (
+                <div className={styles.eventDetails}>
+                    {/* <div className={styles.eventTitle}>{eventData.subject}</div> */}
+                    <div className={styles.eventMeta}>
                         <div className={styles.metaItem}>
-                            <FontAwesomeIcon
-                                icon={
-                                    eventData.location.toLowerCase().includes("zoom") ||
-                                        eventData.location.toLowerCase().includes("teams")
-                                        ? faVideo
-                                        : faMapMarkerAlt
-                                }
-                                className={styles.metaIcon}
-                            />
+                            <FontAwesomeIcon icon={faClock} />
                             <span>
-                                <a
-                                    href={eventData.link?.Url || '#'}
-                                    title={eventData.link?.Url || ''}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={styles.eventLinkNoColor}
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    {eventData.location}
-                                </a>
+                                {/* {eventData.allDayEvent ? 'כל היום' : `${formatEventTime(eventData?.start)} - ${formatEventTime(eventData?.end)}`} */}
+                                {getEventTimeText(eventData)}
                             </span>
                         </div>
-                    )}
 
-                </div>
-                <div className={styles.eventCompany}>
-                    {eventData?.company?.map((comp, index) => (
-                        <span key={index} className={styles.companyBadge}>{comp}</span>
-                    ))}
-                </div>
-            </div>
+                        {eventData?.location && eventData.location.trim() !== "" && (
+                            <div className={styles.metaItem}>
+                                <FontAwesomeIcon
+                                    icon={
+                                        eventData.location.toLowerCase().includes("zoom") ||
+                                            eventData.location.toLowerCase().includes("teams")
+                                            ? faVideo
+                                            : faMapMarkerAlt
+                                    }
+                                    className={styles.metaIcon}
+                                />
+                                <span>
+                                    <a
+                                        href={eventData.link?.Url || '#'}
+                                        title={eventData.link?.Url || ''}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.eventLinkNoColor}
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {eventData.location}
+                                    </a>
+                                </span>
+                            </div>
+                        )}
 
-            <div
-                className={styles.eventActions}
-                style={{
-                    "--hoverBg": defaultColor
-                } as any}
-            >
-                <button
-                    className={styles.calendarBtn}
-                    onClick={handleOnBunClick}
-                    disabled={eventData.isAlreadyAdded || added}
-                    style={
-                        eventData.isAlreadyAdded || added
-                            ? { background: "#4caf50", border: "1px solid #4caf50", color: "white", cursor: "not-allowed" }
-                            : { color: defaultColor, border: `1px solid ${defaultColor}` }
-                    }
-                    title={
-                        eventData.isAlreadyAdded || added ? "כבר נוסף ליומן" : "הוסף ליומן"
-                    }
+                    </div>
+                    <div className={styles.eventCompany}>
+                        {eventData?.company?.map((comp, index) => (
+                            <span key={index} className={styles.companyBadge}>{comp}</span>
+                        ))}
+                    </div>
+                </div>
+
+                <div
+                    className={styles.eventActions}
+                    style={{
+                        "--hoverBg": defaultColor
+                    } as any}
                 >
-                    <FontAwesomeIcon icon={eventData.isAlreadyAdded || added ? faCheck : faCalendarPlus} />
-                    {eventData.isAlreadyAdded || added ? " נוסף!" : " הוסף ליומן"}
-                </button>
+                    <button
+                        className={styles.calendarBtn}
+                        onClick={handleOnBunClick}
+                        disabled={eventData.isAlreadyAdded || added}
+                        style={
+                            eventData.isAlreadyAdded || added
+                                ? { background: "#4caf50", border: "1px solid #4caf50", color: "white", cursor: "not-allowed" }
+                                : { color: defaultColor, border: `1px solid ${defaultColor}` }
+                        }
+                        title={
+                            eventData.isAlreadyAdded || added ? "כבר נוסף ליומן" : "הוסף ליומן"
+                        }
+                    >
+                        <FontAwesomeIcon icon={eventData.isAlreadyAdded || added ? faCheck : faCalendarPlus} />
+                        {eventData.isAlreadyAdded || added ? " נוסף!" : " הוסף ליומן"}
+                    </button>
 
+                </div>
             </div>
         </div>
     );

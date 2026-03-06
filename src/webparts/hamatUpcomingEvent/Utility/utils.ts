@@ -100,47 +100,108 @@ export const getCurrentUserPermission = async (context: WebPartContext, listId: 
 };
 
 // Add Event On User Calendar
+// export const addToPersonalCalendar = async (event: IEventData) => {
+//   const graph = getGraph();
+
+//   if (!graph) {
+//     console.error("Graph not initialized");
+//     return [];
+//   }
+
+//   // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+//   const timeZone = 'Asia/Jerusalem';
+
+//   const newEvent = {
+//     subject: event.title,
+//     body: {
+//       contentType: "html" as BodyType,
+//       content: event.description || event.subject || ""
+//     },
+//     isAllDay: event.allDayEvent,
+//     start: event.allDayEvent
+//       ? {
+//         dateTime: `${event.start!.toISOString().split("T")[0]}T00:00:00.0000000`,
+//         timeZone,
+//       }
+//       : {
+//         dateTime: event.start!.toISOString(),
+//         timeZone,
+//       },
+//     end: event.allDayEvent
+//       ? {
+//         // +1 day because Graph treats end as exclusive
+//         dateTime: `${new Date(
+//           event.end!.getTime() + 24 * 60 * 60 * 1000
+//         )
+//           .toISOString()
+//           .split("T")[0]}T00:00:00.0000000`,
+//         timeZone,
+//       }
+//       : {
+//         dateTime: event.end!.toISOString(),
+//         timeZone,
+//       },
+//     location: {
+//       displayName: event.location,
+//     },
+//     categories: [`${event.id}`],
+//   };
+
+//   await graph.me.events.add(newEvent);
+// };
+
+const toLocalDateTimeString = (date: Date) => {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
+};
+
 export const addToPersonalCalendar = async (event: IEventData) => {
   const graph = getGraph();
 
   if (!graph) {
     console.error("Graph not initialized");
-    return [];
+    return;
   }
 
-  // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const timeZone = 'Asia/Jerusalem';
+  const timeZone = "Asia/Jerusalem";
 
   const newEvent = {
     subject: event.title,
     body: {
       contentType: "html" as BodyType,
-      content: event.description || event.subject || ""
+      content: event.description || event.subject || "",
     },
     isAllDay: event.allDayEvent,
+
     start: event.allDayEvent
       ? {
-        dateTime: `${event.start!.toISOString().split("T")[0]}T00:00:00.0000000`,
-        timeZone,
-      }
+          dateTime: `${event.start!
+            .toISOString()
+            .split("T")[0]}T00:00:00`,
+          timeZone,
+        }
       : {
-        dateTime: event.start!.toISOString(),
-        timeZone,
-      },
+          dateTime: toLocalDateTimeString(event.start!),
+          timeZone,
+        },
+
     end: event.allDayEvent
       ? {
-        // +1 day because Graph treats end as exclusive
-        dateTime: `${new Date(
-          event.end!.getTime() + 24 * 60 * 60 * 1000
-        )
-          .toISOString()
-          .split("T")[0]}T00:00:00.0000000`,
-        timeZone,
-      }
+          dateTime: `${new Date(
+            event.end!.getTime() + 24 * 60 * 60 * 1000
+          )
+            .toISOString()
+            .split("T")[0]}T00:00:00`,
+          timeZone,
+        }
       : {
-        dateTime: event.end!.toISOString(),
-        timeZone,
-      },
+          dateTime: toLocalDateTimeString(event.end!),
+          timeZone,
+        },
+
     location: {
       displayName: event.location,
     },

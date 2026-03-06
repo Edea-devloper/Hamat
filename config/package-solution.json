@@ -3,7 +3,7 @@
   "solution": {
     "name": "hamat-client-side-solution",
     "id": "1daddad9-6e1a-4d92-9ea2-b95e21fde71f",
-    "version": "1.0.0.26",
+    "version": "1.0.0.27",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -36,7 +36,7 @@
         "title": "hamat Feature",
         "description": "The feature that activates elements of the hamat-employee-birthday solution.",
         "id": "8bb132d2-8e51-45d0-9b28-e7136e53ad69",
-        "version": "1.0.0.26"
+        "version": "1.0.0.27"
       }
     ]
   },
